@@ -12,18 +12,24 @@ public class Main {
         try {
             CharStream inputStream = null;
             try {
-                inputStream = CharStreams.fromStream(System.in);
+                inputStream = CharStreams.fromFileName("sample.txt");
             } catch (IOException e) {
                 e.printStackTrace();
             }
             calcLexer lexer = new calcLexer(inputStream);
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(new MyErrorListener());
             CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+
             calcParser parser = new calcParser(tokenStream);
+            parser.removeErrorListeners();
+            parser.addErrorListener(new MyErrorListener());
+
             ParseTree tree = parser.compUnit();
             MyVisitor myVisitor = new MyVisitor();
             myVisitor.visit(tree);
         }catch (Exception e){
-            System.out.println(-1);
+            System.out.println(e);
             return;
         }
     }
