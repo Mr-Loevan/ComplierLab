@@ -3,5 +3,5 @@
 image = { source = "dockerfile", path = ".", tag = "jobs.lab1" }
 
 run = [
-    "java -classpath .:../antlr-4.9.1-complete.jar Main < $input >$ir",
+  "java -classpath .:../antlr-4.9.1-complete.jar Main < $input >$ir",
 ]
