@@ -1,4 +1,4 @@
-FROM openjdk:16
+FROM openjdk:15
 # 向容器内复制文件
 COPY ./ /app/
 # 编译程序

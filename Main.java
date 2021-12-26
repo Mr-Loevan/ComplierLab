@@ -17,7 +17,7 @@ public class Main {
                 e.printStackTrace();
             }
             calcLexer lexer = new calcLexer(inputStream);
-            CommonTokenStream tokenStream = new CommonTokenStream(lexer); 
+            CommonTokenStream tokenStream = new CommonTokenStream(lexer);
             calcParser parser = new calcParser(tokenStream);
             ParseTree tree = parser.compUnit();
             MyVisitor myVisitor = new MyVisitor();
