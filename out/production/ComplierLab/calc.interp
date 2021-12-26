@@ -40,7 +40,7 @@ WS
 FuncType
 Ident
 LINE_COMMENT
-COMMENT
+BLOCK_COMMENT
 
 rule names:
 compUnit

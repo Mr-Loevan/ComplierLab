@@ -19,7 +19,7 @@ public class calcParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, Decimal_const=7, Octal_const=8, 
 		Hexadecimal_const=9, Hexadecimal_prefix=10, Nonzero_digit=11, Octal_digit=12, 
 		Digit=13, Hexadecimal_digit=14, WS=15, FuncType=16, Ident=17, LINE_COMMENT=18, 
-		COMMENT=19;
+		BLOCK_COMMENT=19;
 	public static final int
 		RULE_compUnit = 0, RULE_funcDef = 1, RULE_block = 2, RULE_stmt = 3, RULE_number = 4, 
 		RULE_number1 = 5, RULE_number2 = 6, RULE_number3 = 7;
@@ -43,7 +43,7 @@ public class calcParser extends Parser {
 			null, null, null, null, null, null, null, "Decimal_const", "Octal_const", 
 			"Hexadecimal_const", "Hexadecimal_prefix", "Nonzero_digit", "Octal_digit", 
 			"Digit", "Hexadecimal_digit", "WS", "FuncType", "Ident", "LINE_COMMENT", 
-			"COMMENT"
+			"BLOCK_COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
