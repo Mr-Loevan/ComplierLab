@@ -1,8 +1,8 @@
-FROM openjdk:16
-# ÏòÈİÆ÷ÄÚ¸´ÖÆÎÄ¼ş
+FROM openjdk:15
+# å‘å®¹å™¨å†…å¤åˆ¶æ–‡ä»¶
 COPY ./ /app/
-# ±àÒë³ÌĞò
+# ç¼–è¯‘ç¨‹åº
 WORKDIR /app/
 RUN javac -classpath .:antlr-4.9.1-complete.jar -d ./output ./Main.java
-# ½«µ±Ç°Ä¿Â¼ÉèÎª /app/output
+# å°†å½“å‰ç›®å½•è®¾ä¸º /app/output
 WORKDIR /app/output
