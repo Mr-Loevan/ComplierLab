@@ -47,38 +47,42 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitStmt(calcParser.StmtContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code number1}
-	 * labeled alternative in {@link calcParser#number}.
+	 * Enter a parse tree produced by {@link calcParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(calcParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link calcParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(calcParser.NumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link calcParser#number1}.
 	 * @param ctx the parse tree
 	 */
 	void enterNumber1(calcParser.Number1Context ctx);
 	/**
-	 * Exit a parse tree produced by the {@code number1}
-	 * labeled alternative in {@link calcParser#number}.
+	 * Exit a parse tree produced by {@link calcParser#number1}.
 	 * @param ctx the parse tree
 	 */
 	void exitNumber1(calcParser.Number1Context ctx);
 	/**
-	 * Enter a parse tree produced by the {@code number2}
-	 * labeled alternative in {@link calcParser#number}.
+	 * Enter a parse tree produced by {@link calcParser#number2}.
 	 * @param ctx the parse tree
 	 */
 	void enterNumber2(calcParser.Number2Context ctx);
 	/**
-	 * Exit a parse tree produced by the {@code number2}
-	 * labeled alternative in {@link calcParser#number}.
+	 * Exit a parse tree produced by {@link calcParser#number2}.
 	 * @param ctx the parse tree
 	 */
 	void exitNumber2(calcParser.Number2Context ctx);
 	/**
-	 * Enter a parse tree produced by the {@code number3}
-	 * labeled alternative in {@link calcParser#number}.
+	 * Enter a parse tree produced by {@link calcParser#number3}.
 	 * @param ctx the parse tree
 	 */
 	void enterNumber3(calcParser.Number3Context ctx);
 	/**
-	 * Exit a parse tree produced by the {@code number3}
-	 * labeled alternative in {@link calcParser#number}.
+	 * Exit a parse tree produced by {@link calcParser#number3}.
 	 * @param ctx the parse tree
 	 */
 	void exitNumber3(calcParser.Number3Context ctx);

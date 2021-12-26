@@ -21,10 +21,12 @@ public class calcParser extends Parser {
 		Digit=13, Hexadecimal_digit=14, WS=15, FuncType=16, Ident=17, LINE_COMMENT=18, 
 		COMMENT=19;
 	public static final int
-		RULE_compUnit = 0, RULE_funcDef = 1, RULE_block = 2, RULE_stmt = 3, RULE_number = 4;
+		RULE_compUnit = 0, RULE_funcDef = 1, RULE_block = 2, RULE_stmt = 3, RULE_number = 4, 
+		RULE_number1 = 5, RULE_number2 = 6, RULE_number3 = 7;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"compUnit", "funcDef", "block", "stmt", "number"
+			"compUnit", "funcDef", "block", "stmt", "number", "number1", "number2", 
+			"number3"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -124,7 +126,7 @@ public class calcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(10);
+			setState(16);
 			funcDef();
 			}
 		}
@@ -170,15 +172,15 @@ public class calcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(12);
+			setState(18);
 			match(FuncType);
-			setState(13);
+			setState(19);
 			match(Ident);
-			setState(14);
+			setState(20);
 			match(T__0);
-			setState(15);
+			setState(21);
 			match(T__1);
-			setState(16);
+			setState(22);
 			block();
 			}
 		}
@@ -222,11 +224,11 @@ public class calcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(18);
+			setState(24);
 			match(T__2);
-			setState(19);
+			setState(25);
 			stmt();
-			setState(20);
+			setState(26);
 			match(T__3);
 			}
 		}
@@ -270,11 +272,11 @@ public class calcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(22);
+			setState(28);
 			match(T__4);
-			setState(23);
+			setState(29);
 			number();
-			setState(24);
+			setState(30);
 			match(T__5);
 			}
 		}
@@ -290,64 +292,30 @@ public class calcParser extends Parser {
 	}
 
 	public static class NumberContext extends ParserRuleContext {
+		public Number1Context number1() {
+			return getRuleContext(Number1Context.class,0);
+		}
+		public Number2Context number2() {
+			return getRuleContext(Number2Context.class,0);
+		}
+		public Number3Context number3() {
+			return getRuleContext(Number3Context.class,0);
+		}
 		public NumberContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_number; }
-	 
-		public NumberContext() { }
-		public void copyFrom(NumberContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	public static class Number3Context extends NumberContext {
-		public TerminalNode Hexadecimal_const() { return getToken(calcParser.Hexadecimal_const, 0); }
-		public Number3Context(NumberContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof calcListener ) ((calcListener)listener).enterNumber3(this);
+			if ( listener instanceof calcListener ) ((calcListener)listener).enterNumber(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof calcListener ) ((calcListener)listener).exitNumber3(this);
+			if ( listener instanceof calcListener ) ((calcListener)listener).exitNumber(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof calcVisitor ) return ((calcVisitor<? extends T>)visitor).visitNumber3(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class Number1Context extends NumberContext {
-		public TerminalNode Decimal_const() { return getToken(calcParser.Decimal_const, 0); }
-		public Number1Context(NumberContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof calcListener ) ((calcListener)listener).enterNumber1(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof calcListener ) ((calcListener)listener).exitNumber1(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof calcVisitor ) return ((calcVisitor<? extends T>)visitor).visitNumber1(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class Number2Context extends NumberContext {
-		public TerminalNode Octal_const() { return getToken(calcParser.Octal_const, 0); }
-		public Number2Context(NumberContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof calcListener ) ((calcListener)listener).enterNumber2(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof calcListener ) ((calcListener)listener).exitNumber2(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof calcVisitor ) return ((calcVisitor<? extends T>)visitor).visitNumber2(this);
+			if ( visitor instanceof calcVisitor ) return ((calcVisitor<? extends T>)visitor).visitNumber(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -356,31 +324,28 @@ public class calcParser extends Parser {
 		NumberContext _localctx = new NumberContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_number);
 		try {
-			setState(29);
+			setState(35);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case Decimal_const:
-				_localctx = new Number1Context(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(26);
-				match(Decimal_const);
+				setState(32);
+				number1();
 				}
 				break;
 			case Octal_const:
-				_localctx = new Number2Context(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(27);
-				match(Octal_const);
+				setState(33);
+				number2();
 				}
 				break;
 			case Hexadecimal_const:
-				_localctx = new Number3Context(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(28);
-				match(Hexadecimal_const);
+				setState(34);
+				number3();
 				}
 				break;
 			default:
@@ -398,16 +363,144 @@ public class calcParser extends Parser {
 		return _localctx;
 	}
 
+	public static class Number1Context extends ParserRuleContext {
+		public TerminalNode Decimal_const() { return getToken(calcParser.Decimal_const, 0); }
+		public Number1Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_number1; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof calcListener ) ((calcListener)listener).enterNumber1(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof calcListener ) ((calcListener)listener).exitNumber1(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof calcVisitor ) return ((calcVisitor<? extends T>)visitor).visitNumber1(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Number1Context number1() throws RecognitionException {
+		Number1Context _localctx = new Number1Context(_ctx, getState());
+		enterRule(_localctx, 10, RULE_number1);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(37);
+			match(Decimal_const);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Number2Context extends ParserRuleContext {
+		public TerminalNode Octal_const() { return getToken(calcParser.Octal_const, 0); }
+		public Number2Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_number2; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof calcListener ) ((calcListener)listener).enterNumber2(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof calcListener ) ((calcListener)listener).exitNumber2(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof calcVisitor ) return ((calcVisitor<? extends T>)visitor).visitNumber2(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Number2Context number2() throws RecognitionException {
+		Number2Context _localctx = new Number2Context(_ctx, getState());
+		enterRule(_localctx, 12, RULE_number2);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(39);
+			match(Octal_const);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Number3Context extends ParserRuleContext {
+		public TerminalNode Hexadecimal_const() { return getToken(calcParser.Hexadecimal_const, 0); }
+		public Number3Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_number3; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof calcListener ) ((calcListener)listener).enterNumber3(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof calcListener ) ((calcListener)listener).exitNumber3(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof calcVisitor ) return ((calcVisitor<? extends T>)visitor).visitNumber3(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Number3Context number3() throws RecognitionException {
+		Number3Context _localctx = new Number3Context(_ctx, getState());
+		enterRule(_localctx, 14, RULE_number3);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(41);
+			match(Hexadecimal_const);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25\"\4\2\t\2\4\3"+
-		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3"+
-		"\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3\6\5\6 \n\6\3\6\2\2\7\2\4\6\b\n\2\2\2"+
-		"\36\2\f\3\2\2\2\4\16\3\2\2\2\6\24\3\2\2\2\b\30\3\2\2\2\n\37\3\2\2\2\f"+
-		"\r\5\4\3\2\r\3\3\2\2\2\16\17\7\22\2\2\17\20\7\23\2\2\20\21\7\3\2\2\21"+
-		"\22\7\4\2\2\22\23\5\6\4\2\23\5\3\2\2\2\24\25\7\5\2\2\25\26\5\b\5\2\26"+
-		"\27\7\6\2\2\27\7\3\2\2\2\30\31\7\7\2\2\31\32\5\n\6\2\32\33\7\b\2\2\33"+
-		"\t\3\2\2\2\34 \7\t\2\2\35 \7\n\2\2\36 \7\13\2\2\37\34\3\2\2\2\37\35\3"+
-		"\2\2\2\37\36\3\2\2\2 \13\3\2\2\2\3\37";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25.\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\3\3\3\3\3"+
+		"\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3\6\5\6&\n\6\3\7"+
+		"\3\7\3\b\3\b\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2\'\2\22\3\2\2\2"+
+		"\4\24\3\2\2\2\6\32\3\2\2\2\b\36\3\2\2\2\n%\3\2\2\2\f\'\3\2\2\2\16)\3\2"+
+		"\2\2\20+\3\2\2\2\22\23\5\4\3\2\23\3\3\2\2\2\24\25\7\22\2\2\25\26\7\23"+
+		"\2\2\26\27\7\3\2\2\27\30\7\4\2\2\30\31\5\6\4\2\31\5\3\2\2\2\32\33\7\5"+
+		"\2\2\33\34\5\b\5\2\34\35\7\6\2\2\35\7\3\2\2\2\36\37\7\7\2\2\37 \5\n\6"+
+		"\2 !\7\b\2\2!\t\3\2\2\2\"&\5\f\7\2#&\5\16\b\2$&\5\20\t\2%\"\3\2\2\2%#"+
+		"\3\2\2\2%$\3\2\2\2&\13\3\2\2\2\'(\7\t\2\2(\r\3\2\2\2)*\7\n\2\2*\17\3\2"+
+		"\2\2+,\7\13\2\2,\21\3\2\2\2\3%";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
