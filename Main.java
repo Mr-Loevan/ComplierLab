@@ -12,7 +12,7 @@ public class Main {
         try {
             CharStream inputStream = null;
             try {
-                inputStream = CharStreams.fromFileName("sample.txt");
+                inputStream = CharStreams.fromStream(System.in);
             } catch (IOException e) {
                 e.printStackTrace();
             }
