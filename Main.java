@@ -23,7 +23,8 @@ public class Main {
             MyVisitor myVisitor = new MyVisitor();
             myVisitor.visit(tree);
         }catch (Exception e){
-            throw e;
+            System.out.println(-1);
+            return;
         }
     }
 }
