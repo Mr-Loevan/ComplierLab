@@ -110,13 +110,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         memory.replace(blockname,time);
         switch (c){
             case "*":
-                System.out.printf("%%x%d = mul i32 %%x%d, %%%d\n",time,l,r);
+                System.out.printf("%%d = mul i32 %%d, %%%d\n",time,l,r);
                 break;
             case "/":
-                System.out.printf("%%x%d = sdiv i32 %%x%d, %%%d\n",time,l,r);
+                System.out.printf("%%d = sdiv i32 %%d, %%%d\n",time,l,r);
                 break;
             case "%":
-                System.out.printf("%%x%d = srem i32 %%x%d, %%%d\n",time,l,r);
+                System.out.printf("%%d = srem i32 %%d, %%%d\n",time,l,r);
             default:
                 System.out.println(c);
                 System.exit(-1);
