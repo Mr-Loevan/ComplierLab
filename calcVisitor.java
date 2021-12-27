@@ -34,6 +34,68 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStmt(calcParser.StmtContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link calcParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExp(calcParser.ExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code addExp2}
+	 * labeled alternative in {@link calcParser#addExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddExp2(calcParser.AddExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code addExp1}
+	 * labeled alternative in {@link calcParser#addExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddExp1(calcParser.AddExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mulExp2}
+	 * labeled alternative in {@link calcParser#mulExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMulExp2(calcParser.MulExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mulExp1}
+	 * labeled alternative in {@link calcParser#mulExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMulExp1(calcParser.MulExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code unaryExp1}
+	 * labeled alternative in {@link calcParser#unaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryExp1(calcParser.UnaryExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code unaryExp2}
+	 * labeled alternative in {@link calcParser#unaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryExp2(calcParser.UnaryExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code primaryExp1}
+	 * labeled alternative in {@link calcParser#primaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryExp1(calcParser.PrimaryExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code primaryExp2}
+	 * labeled alternative in {@link calcParser#primaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryExp2(calcParser.PrimaryExp2Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link calcParser#number}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
