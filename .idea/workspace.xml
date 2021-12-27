@@ -95,11 +95,22 @@
       <workItem from="1640449606436" duration="3137000" />
       <workItem from="1640522333652" duration="1671000" />
       <workItem from="1640524914701" duration="5846000" />
-      <workItem from="1640609699847" duration="12314000" />
+      <workItem from="1640609699847" duration="13083000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/MyVisitor.java</url>
+          <line>109</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
