@@ -113,7 +113,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.printf("%%%d = mul i32 %%%d, %%%d\n",time,l,r);
                 break;
             case "/":
-                System.out.printf("%%%d = sdiv i32 %%d, %%%d\n",time,l,r);
+                System.out.printf("%%%d = sdiv i32 %%%d, %%%d\n",time,l,r);
                 break;
             case "%":
                 System.out.printf("%%%d = srem i32 %%%d, %%%d\n",time,l,r);
