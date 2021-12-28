@@ -127,11 +127,80 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStmt3(calcParser.Stmt3Context ctx);
 	/**
+	 * Visit a parse tree produced by the {@code stmt4}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt4(calcParser.Stmt4Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link calcParser#exp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitExp(calcParser.ExpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#cond}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCond(calcParser.CondContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code lOrExp2}
+	 * labeled alternative in {@link calcParser#lOrExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLOrExp2(calcParser.LOrExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code lOrExp1}
+	 * labeled alternative in {@link calcParser#lOrExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLOrExp1(calcParser.LOrExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code lAndExp1}
+	 * labeled alternative in {@link calcParser#lAndExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLAndExp1(calcParser.LAndExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code lAndExp2}
+	 * labeled alternative in {@link calcParser#lAndExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLAndExp2(calcParser.LAndExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code eqExp2}
+	 * labeled alternative in {@link calcParser#eqExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqExp2(calcParser.EqExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code eqExp1}
+	 * labeled alternative in {@link calcParser#eqExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqExp1(calcParser.EqExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code relExp2}
+	 * labeled alternative in {@link calcParser#relExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelExp2(calcParser.RelExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code relExp1}
+	 * labeled alternative in {@link calcParser#relExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelExp1(calcParser.RelExp1Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#lVal}.
 	 * @param ctx the parse tree

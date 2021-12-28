@@ -205,6 +205,18 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitStmt3(calcParser.Stmt3Context ctx);
 	/**
+	 * Enter a parse tree produced by the {@code stmt4}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmt4(calcParser.Stmt4Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmt4}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmt4(calcParser.Stmt4Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link calcParser#exp}.
 	 * @param ctx the parse tree
 	 */
@@ -214,6 +226,112 @@ public interface calcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExp(calcParser.ExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link calcParser#cond}.
+	 * @param ctx the parse tree
+	 */
+	void enterCond(calcParser.CondContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link calcParser#cond}.
+	 * @param ctx the parse tree
+	 */
+	void exitCond(calcParser.CondContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code lOrExp2}
+	 * labeled alternative in {@link calcParser#lOrExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterLOrExp2(calcParser.LOrExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code lOrExp2}
+	 * labeled alternative in {@link calcParser#lOrExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitLOrExp2(calcParser.LOrExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code lOrExp1}
+	 * labeled alternative in {@link calcParser#lOrExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterLOrExp1(calcParser.LOrExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code lOrExp1}
+	 * labeled alternative in {@link calcParser#lOrExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitLOrExp1(calcParser.LOrExp1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code lAndExp1}
+	 * labeled alternative in {@link calcParser#lAndExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterLAndExp1(calcParser.LAndExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code lAndExp1}
+	 * labeled alternative in {@link calcParser#lAndExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitLAndExp1(calcParser.LAndExp1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code lAndExp2}
+	 * labeled alternative in {@link calcParser#lAndExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterLAndExp2(calcParser.LAndExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code lAndExp2}
+	 * labeled alternative in {@link calcParser#lAndExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitLAndExp2(calcParser.LAndExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code eqExp2}
+	 * labeled alternative in {@link calcParser#eqExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqExp2(calcParser.EqExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code eqExp2}
+	 * labeled alternative in {@link calcParser#eqExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqExp2(calcParser.EqExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code eqExp1}
+	 * labeled alternative in {@link calcParser#eqExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqExp1(calcParser.EqExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code eqExp1}
+	 * labeled alternative in {@link calcParser#eqExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqExp1(calcParser.EqExp1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code relExp2}
+	 * labeled alternative in {@link calcParser#relExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelExp2(calcParser.RelExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code relExp2}
+	 * labeled alternative in {@link calcParser#relExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelExp2(calcParser.RelExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code relExp1}
+	 * labeled alternative in {@link calcParser#relExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelExp1(calcParser.RelExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code relExp1}
+	 * labeled alternative in {@link calcParser#relExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelExp1(calcParser.RelExp1Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link calcParser#lVal}.
 	 * @param ctx the parse tree
