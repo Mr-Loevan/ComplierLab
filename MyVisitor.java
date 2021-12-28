@@ -83,7 +83,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int reg = memory.get(blockname);
         reg++;
         memory.put(blockname,reg);//nt wrong
-        System.out.printf("%%%d = or i1 %%%d,%%%d\n",reg,l,r);//要求左右均是i1
+        System.out.printf("%%x%d = or i1 %%x%d,%%x%d\n",reg,l,r);//要求左右均是i1
         return reg;
     }
     //    lAndExp:eqExp   #lAndExp1
@@ -94,7 +94,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int reg = memory.get(blockname);
         reg++;
         memory.put(blockname,reg);
-        System.out.printf("%%%d = icmp eq i32 1, %%%d\n",reg,val);
+        System.out.printf("%%x%d = icmp eq i32 1, %%x%d\n",reg,val);
         return reg;
     }
 
@@ -105,10 +105,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int reg = memory.get(blockname);
         reg++;
         memory.put(blockname,reg);
-        System.out.printf("%%%d = icmp eq i32 1, %%%d\n",reg,r);
+        System.out.printf("%%x%d = icmp eq i32 1, %%x%d\n",reg,r);
         int new_reg = memory.get(blockname);new_reg++;
         memory.put(blockname,new_reg);
-        System.out.printf("%%%d = and i1 %%%d,%%%d\n",new_reg,l,reg);
+        System.out.printf("%%x%d = and i1 %%x%d,%%x%d\n",new_reg,l,reg);
         return new_reg;
     }
     //    eqExp:relExp    #eqExp1
@@ -133,13 +133,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         memory.put(blockname,reg2);
         switch (s){
             case "==":
-                System.out.printf("%%%d = icmp eq i32 %%%d, %%%d\n",reg1,l,r);
+                System.out.printf("%%x%d = icmp eq i32 %%x%d, %%x%d\n",reg1,l,r);
                 break;
             case "!=":
-                System.out.printf("%%%d = icmp ne i32 %%%d, %%%d\n",reg1,l,r);
+                System.out.printf("%%x%d = icmp ne i32 %%x%d, %%x%d\n",reg1,l,r);
                 break;
         }
-        System.out.printf("%%%d = zext i1 %%%d to i32\n",reg2,reg1);
+        System.out.printf("%%x%d = zext i1 %%x%d to i32\n",reg2,reg1);
         return reg2;
     }
     //    relExp:addExp   #relExp1
@@ -161,16 +161,16 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         String s = ctx.CmpOp().getText();
         switch (s){
             case "<":
-                System.out.printf("%%%d = icmp slt i32 %%%d, %%%d\n",reg_1,l,r);
+                System.out.printf("%%x%d = icmp slt i32 %%x%d, %%x%d\n",reg_1,l,r);
                 break;
             case "<=":
-                System.out.printf("%%%d = icmp sle i32 %%%d, %%%d\n",reg_1,l,r);
+                System.out.printf("%%x%d = icmp sle i32 %%x%d, %%x%d\n",reg_1,l,r);
                 break;
             case ">":
-                System.out.printf("%%%d = icmp sgt i32 %%%d, %%%d\n",reg_1,l,r);
+                System.out.printf("%%x%d = icmp sgt i32 %%x%d, %%x%d\n",reg_1,l,r);
                 break;
             case ">=":
-                System.out.printf("%%%d = icmp sge i32 %%%d, %%%d\n",reg_1,l,r);
+                System.out.printf("%%x%d = icmp sge i32 %%x%d, %%x%d\n",reg_1,l,r);
                 break;
             default:
                 System.exit(-1);
@@ -178,7 +178,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int reg_2 = memory.get(blockname);
         reg_2++;
         memory.put(blockname,reg_2);
-        System.out.printf("%%%d = zext i1 %%%d to i32\n",reg_2,reg_1);
+        System.out.printf("%%x%d = zext i1 %%x%d to i32\n",reg_2,reg_1);
         return reg_2;
     }
 
@@ -189,7 +189,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            'return' exp ';'#stmt5;
     @Override
     public Integer visitStmt5(calcParser.Stmt5Context ctx) {
-        System.out.println("ret i32 %"+visit(ctx.exp()));
+        System.out.println("ret i32 %x"+visit(ctx.exp()));
         return 0;
     }
     @Override
@@ -204,11 +204,11 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg_2 = memory.get(blockname);
                 reg_2++;
                 memory.put(blockname,reg_2);
-                System.out.printf("br i1 %%%d ,label %%%d,label %%%d\n\n",ret,reg_1,reg_2);
-                System.out.printf("%d:\n",reg_1);
+                System.out.printf("br i1 %%x%d ,label %%x%d,label %%x%d\n\n",ret,reg_1,reg_2);
+                System.out.printf("x%d:\n",reg_1);
                 visit(ctx.stmt(0));
-                System.out.printf("br label %%%d\n\n",reg_2);
-                System.out.printf("%d:\n",reg_2);
+                System.out.printf("br label %%x%d\n\n",reg_2);
+                System.out.printf("x%d:\n",reg_2);
                 break;
             case 2:
                 int case2_ret = visit(ctx.cond());
@@ -221,14 +221,14 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int case2_reg_3 = memory.get(blockname);
                 case2_reg_3++;
                 memory.put(blockname,case2_reg_3);
-                System.out.printf("br i1 %%%d ,label %%%d,label %%%d\n\n",case2_ret,case2_reg_1,case2_reg_2);
-                System.out.printf("%d:\n",case2_reg_1);
+                System.out.printf("br i1 %%x%d ,label %%x%d,label %%x%d\n\n",case2_ret,case2_reg_1,case2_reg_2);
+                System.out.printf("x%d:\n",case2_reg_1);
                 visit(ctx.stmt(0));
-                System.out.printf("br label %%%d\n\n",case2_reg_3);//nt wrong
-                System.out.printf("%d:\n",case2_reg_2);
+                System.out.printf("br label %%x%d\n\n",case2_reg_3);//nt wrong
+                System.out.printf("x%d:\n",case2_reg_2);
                 visit(ctx.stmt(1));
-                System.out.printf("br label %%%d\n\n",case2_reg_3);
-                System.out.printf("%d:\n",case2_reg_3);
+                System.out.printf("br label %%x%d\n\n",case2_reg_3);
+                System.out.printf("x%d:\n",case2_reg_3);
                 break;
         }
         return 0;
@@ -240,7 +240,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         if(varTable.get(s)==null)   System.exit(-1);
         int reg = varTable.get(s);
         int l = visit(ctx.exp());
-        System.out.printf("store i32 %%%d, i32* %%%d\n",l,reg);
+        System.out.printf("store i32 %%x%d, i32* %%x%d\n",l,reg);
         return 0;
     }
 
@@ -259,7 +259,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
            reg++;
            memory.replace(blockname,reg);
            varTable.put(s,reg);
-           System.out.printf("%%%d = alloca i32\n",reg);
+           System.out.printf("%%x%d = alloca i32\n",reg);
        }else
            System.exit(-1);
        return reg;
@@ -274,8 +274,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             reg++;
             memory.replace(blockname,reg);
             varTable.put(s,reg);
-            System.out.printf("%%%d = alloca i32\n",reg);
-            System.out.printf("store i32 %%%d, i32* %%%d\n",val,reg);
+            System.out.printf("%%x%d = alloca i32\n",reg);
+            System.out.printf("store i32 %%x%d, i32* %%x%d\n",val,reg);
         }else
             System.exit(-1);
         return reg;
@@ -331,10 +331,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         memory.replace(blockname,time);
         switch (c){
             case "+":
-                System.out.printf("%%%d = add i32 %%%d, %%%d\n",time,l,r);
+                System.out.printf("%%x%d = add i32 %%x%d, %%x%d\n",time,l,r);
                 break;
             case "-":
-                System.out.printf("%%%d = sub i32 %%%d, %%%d\n",time,l,r);
+                System.out.printf("%%x%d = sub i32 %%x%d, %%x%d\n",time,l,r);
                 break;
             default:
                 System.out.println(c);
@@ -359,13 +359,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         memory.replace(blockname,time);
         switch (c){
             case "*":
-                System.out.printf("%%%d = mul i32 %%%d, %%%d\n",time,l,r);
+                System.out.printf("%%x%d = mul i32 %%x%d, %%x%d\n",time,l,r);
                 break;
             case "/":
-                System.out.printf("%%%d = sdiv i32 %%%d, %%%d\n",time,l,r);
+                System.out.printf("%%x%d = sdiv i32 %%x%d, %%x%d\n",time,l,r);
                 break;
             case "%":
-                System.out.printf("%%%d = srem i32 %%%d, %%%d\n",time,l,r);
+                System.out.printf("%%x%d = srem i32 %%x%d, %%x%d\n",time,l,r);
                 break;
             default:
                 System.out.println(c);
@@ -387,17 +387,17 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         memory.replace(blockname,time);
         switch (op){
             case "+":
-                System.out.printf("%%%d = add i32 0, %%%d\n",time,val);
+                System.out.printf("%%x%d = add i32 0, %%x%d\n",time,val);
                 break;
             case "-":
-                System.out.printf("%%%d = sub i32 0, %%%d\n",time,val);
+                System.out.printf("%%x%d = sub i32 0, %%x%d\n",time,val);
                 break;
             case "!":
-                System.out.printf("%%%d = icmp eq i32 0, %%%d\n",time,val);
+                System.out.printf("%%x%d = icmp eq i32 0, %%x%d\n",time,val);
                 int new_reg  = memory.get(blockname);
                 new_reg++;
                 memory.replace(blockname,new_reg);
-                System.out.printf("%%%d = zext i1 %%%d to i32\n",new_reg,time);
+                System.out.printf("%%x%d = zext i1 %%x%d to i32\n",new_reg,time);
                 return new_reg;
             default:
                 System.out.println(op);
@@ -416,14 +416,14 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 reg = memory.get(blockname);
                 reg++;
                 memory.replace(blockname,reg);
-                System.out.printf("%%%d = call i32 @getint()\n",reg);
+                System.out.printf("%%x%d = call i32 @getint()\n",reg);
                 break;
             case "putint":
                 try{
                     ctx.funcRParams().exp().forEach(expContext -> {
                         params.add(visit(expContext));
                     });
-                    System.out.printf("call void @putint(i32 %%%d)\n", params.get(0));
+                    System.out.printf("call void @putint(i32 %%x%d)\n", params.get(0));
                 }catch (Exception e){
                     System.exit(-1);
                 }
@@ -432,14 +432,14 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 reg = memory.get(blockname);
                 reg++;
                 memory.replace(blockname,reg);
-                System.out.printf("%%%d = call i32 @getch()\n",reg);
+                System.out.printf("%%x%d = call i32 @getch()\n",reg);
                 break;
             case "putch":
                 try {
                     ctx.funcRParams().exp().forEach(expContext -> {
                         params.add(visit(expContext));
                     });
-                    System.out.printf("call void @putch(i32 %%%d)\n", params.get(0));
+                    System.out.printf("call void @putch(i32 %%x%d)\n", params.get(0));
                 }catch (Exception e){
                     System.exit(-1);
                 }
@@ -467,7 +467,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int time = memory.get(blockname);
         time++;
         memory.replace(blockname,time);
-        System.out.printf("%%%d = add i32 0, %d\n",time,val);
+        System.out.printf("%%x%d = add i32 0, %d\n",time,val);
         return time;
     }
 
@@ -479,11 +479,11 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         if(varTable.get(s)!=null){
             int addr = varTable.get(s);
             memory.replace(blockname,reg);
-            System.out.printf("%%%d = load i32, i32* %%%d\n",reg,addr);
+            System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg,addr);
         }else if(constVarTable.get(s)!=null){
             int val = constVarTable.get(s);
             memory.replace(blockname,reg);
-            System.out.printf("%%%d = add i32 0, %%%d\n", reg,val);
+            System.out.printf("%%x%d = add i32 0, %%x%d\n", reg,val);
         }else
             System.exit(-1);
         return reg;
