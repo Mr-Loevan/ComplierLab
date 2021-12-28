@@ -62,9 +62,11 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     }
 //    stmt:   lVal'='exp';' #stmt1|
 //            (exp)? ';'#stmt2|
-//            'return' exp ';'#stmt3;
+//            'if' '(' cond ')'stmt ( 'else' stmt )?#stmt3|
+//    block  #stmt4|
+//            'return' exp ';'#stmt5;
     @Override
-    public Integer visitStmt3(calcParser.Stmt3Context ctx) {
+    public Integer visitStmt5(calcParser.Stmt5Context ctx) {
         System.out.println("ret i32 %"+visit(ctx.exp()));
         return 0;
     }

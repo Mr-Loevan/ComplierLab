@@ -217,6 +217,18 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitStmt4(calcParser.Stmt4Context ctx);
 	/**
+	 * Enter a parse tree produced by the {@code stmt5}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmt5(calcParser.Stmt5Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmt5}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmt5(calcParser.Stmt5Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link calcParser#exp}.
 	 * @param ctx the parse tree
 	 */
