@@ -36,9 +36,13 @@
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Vector;
+
 public class MyVisitor extends calcBaseVisitor<Integer>{
     String blockname;
     Map<String, Integer> memory = new HashMap<>();
+    Map<String, Integer> varTable = new HashMap<>();
+    Map<String, Integer> constVarTable = new HashMap<>();
     @Override public Integer visitFuncDef(calcParser.FuncDefContext ctx) {
         String funcName = ctx.Ident().getText();
         System.out.print("define dso_local i32 @");
@@ -52,14 +56,94 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 
     @Override public Integer visitBlock(calcParser.BlockContext ctx){
         System.out.println('{');
-        visit(ctx.stmt());
+        ctx.blockItem().forEach(blockItemContext -> {visit(blockItemContext);});
         System.out.println('}');
         return 0;
     }
-
-    @Override public Integer visitStmt(calcParser.StmtContext ctx) {
+//    stmt:   lVal'='exp';' #stmt1|
+//            (exp)? ';'#stmt2|
+//            'return' exp ';'#stmt3;
+    @Override
+    public Integer visitStmt3(calcParser.Stmt3Context ctx) {
         System.out.println("ret i32 %"+visit(ctx.exp()));
         return 0;
+    }
+
+    @Override
+    public Integer visitStmt1(calcParser.Stmt1Context ctx) {
+        String s = ctx.lVal().getText();
+        if(varTable.get(s)==null)   System.exit(-1);
+        int reg = varTable.get(s);
+        int l = visit(ctx.exp());
+        System.out.printf("store i32 %%%d, i32* %%%d\n",l,reg);
+        return 0;
+    }
+
+    @Override
+    public Integer visitStmt2(calcParser.Stmt2Context ctx) {
+        visit(ctx.exp());
+        return 0;
+    }
+//    varDef:Ident#varDef1|
+//    Ident '='initVal#varDef2;
+    @Override
+    public Integer visitVarDef1(calcParser.VarDef1Context ctx) {
+       String s = ctx.Ident().getText();
+       int reg = memory.get(blockname);
+       if(varTable.get(s)==null&&constVarTable.get(s)==null){
+           reg++;
+           memory.replace(blockname,reg);
+           varTable.put(s,reg);
+           System.out.printf("%%%d = alloca i32\n",reg);
+       }else
+           System.exit(-1);
+       return reg;
+    }
+
+    @Override
+    public Integer visitVarDef2(calcParser.VarDef2Context ctx) {
+        String s = ctx.Ident().getText();
+        int val = visit(ctx.initVal());
+        int reg = memory.get(blockname);
+        if(varTable.get(s)==null&&constVarTable.get(s)==null){
+            reg++;
+            memory.replace(blockname,reg);
+            varTable.put(s,reg);
+            System.out.printf("%%%d = alloca i32\n",reg);
+            System.out.printf("store i32 %%%d, i32* %%%d\n",val,reg);
+        }else
+            System.exit(-1);
+        return reg;
+    }
+//  initVal:exp;
+    @Override
+    public Integer visitInitVal(calcParser.InitValContext ctx) {
+        return visit(ctx.exp());
+    }
+//    constdecl: 'const' BType constDef ( ',' constDef )* ';';
+//    constDef:Ident '=' constInitval;
+//    constInitval: constExp;
+
+    @Override
+    public Integer visitConstExp(calcParser.ConstExpContext ctx) {
+        return visit(ctx.addExp());
+    }
+
+    @Override
+    public Integer visitConstDef(calcParser.ConstDefContext ctx) {
+        String s = ctx.Ident().getText();
+        int reg = visit(ctx.constInitval());
+        if(varTable.get(s)==null&&constVarTable.get(s)==null){
+            constVarTable.put(s,reg);
+        }else{
+            System.exit(-1);
+        }
+        return reg;
+    }
+
+    @Override
+    public Integer visitConstInitval(calcParser.ConstInitvalContext ctx) {
+        return visit(ctx.constExp());
     }
 
     @Override
@@ -125,8 +209,9 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         }
         return time;
     }
-    //        unaryExp: primaryExp    #unaryExp1
-//        |UnaryOp unaryExp   #unaryExp2;
+//    unaryExp: primaryExp    #unaryExp1
+//        |UnaryOp unaryExp   #unaryExp2
+//        |Ident '('(funcRParams)?')' #unaryExp3;
 
     @Override
     public Integer visitUnaryExp2(calcParser.UnaryExp2Context ctx) {
@@ -149,8 +234,55 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         return time;
     }
 
-    //        primaryExp: '('exp')'   #primaryExp1
-//        |number     #primaryExp2;
+    @Override
+    public Integer visitUnaryExp3(calcParser.UnaryExp3Context ctx) {
+        String s = ctx.Ident().getText();
+        Vector<Integer> params = new Vector<Integer>();
+        int reg=0;
+        switch (s){
+            case "getint":
+                reg = memory.get(blockname);
+                reg++;
+                memory.replace(blockname,reg);
+                System.out.printf("%%%d = call i32 @getint()\n",reg);
+                break;
+            case "putint":
+                try{
+                    ctx.funcRParams().exp().forEach(expContext -> {
+                        params.add(visit(expContext));
+                    });
+                    System.out.printf("call void @putint(i32 %%%d)\n", params.get(0));
+                }catch (Exception e){
+                    System.exit(-1);
+                }
+                break;
+            case "getch":
+                reg = memory.get(blockname);
+                reg++;
+                memory.replace(blockname,reg);
+                System.out.printf("%%%d = call i32 @getch()\n",reg);
+                break;
+            case "putch":
+                try {
+                    ctx.funcRParams().exp().forEach(expContext -> {
+                        params.add(visit(expContext));
+                    });
+                    System.out.printf("call void @putch(i32 %%%d)\n", params.get(0));
+                }catch (Exception e){
+                    System.exit(-1);
+                }
+                break;
+        }
+        return reg;
+    }
+
+    @Override
+    public Integer visitFuncRParams(calcParser.FuncRParamsContext ctx) {
+        return super.visitFuncRParams(ctx);
+    }
+    //    primaryExp: '('exp')'   #primaryExp1
+//        |number     #primaryExp2
+//        |lVal       #primaryExp3;
 
     @Override
     public Integer visitPrimaryExp1(calcParser.PrimaryExp1Context ctx) {
@@ -165,6 +297,24 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         memory.replace(blockname,time);
         System.out.printf("%%%d = add i32 0, %d\n",time,val);
         return time;
+    }
+
+    @Override
+    public Integer visitPrimaryExp3(calcParser.PrimaryExp3Context ctx) {
+        String s = ctx.lVal().getText();
+        int reg = memory.get(blockname);
+        reg++;
+        if(varTable.get(s)!=null){
+            int addr = varTable.get(s);
+            memory.replace(blockname,reg);
+            System.out.printf("%%%d = load i32, i32* %%%d\n",reg,addr);
+        }else if(constVarTable.get(s)!=null){
+            int addr = constVarTable.get(s);
+            memory.replace(blockname,reg);
+            System.out.println("%%%d = add i32 0, %" +constVarTable.get(s));
+        }else
+            System.exit(-1);
+        return reg;
     }
 
     @Override public Integer visitNumber1(calcParser.Number1Context ctx){

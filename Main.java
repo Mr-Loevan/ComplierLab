@@ -27,6 +27,10 @@ public class Main {
 
             ParseTree tree = parser.compUnit();
             MyVisitor myVisitor = new MyVisitor();
+            System.out.println("declare i32 @getint()");
+            System.out.println("declare void @putint(i32)");
+            System.out.println("declare i32 @getch()");
+            System.out.println("declare void @putch(i32)");
             myVisitor.visit(tree);
         }catch (Exception e){
             System.out.println(e);

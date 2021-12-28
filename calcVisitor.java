@@ -16,11 +16,75 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompUnit(calcParser.CompUnitContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code decl1}
+	 * labeled alternative in {@link calcParser#decl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecl1(calcParser.Decl1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code decl2}
+	 * labeled alternative in {@link calcParser#decl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecl2(calcParser.Decl2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#constdecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstdecl(calcParser.ConstdeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#constDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstDef(calcParser.ConstDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#constInitval}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstInitval(calcParser.ConstInitvalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#varDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarDecl(calcParser.VarDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code varDef1}
+	 * labeled alternative in {@link calcParser#varDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarDef1(calcParser.VarDef1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code varDef2}
+	 * labeled alternative in {@link calcParser#varDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarDef2(calcParser.VarDef2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#initVal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInitVal(calcParser.InitValContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link calcParser#funcDef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFuncDef(calcParser.FuncDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#funcRParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncRParams(calcParser.FuncRParamsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#block}.
 	 * @param ctx the parse tree
@@ -28,11 +92,40 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(calcParser.BlockContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link calcParser#stmt}.
+	 * Visit a parse tree produced by the {@code blockItem1}
+	 * labeled alternative in {@link calcParser#blockItem}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStmt(calcParser.StmtContext ctx);
+	T visitBlockItem1(calcParser.BlockItem1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code blockItem2}
+	 * labeled alternative in {@link calcParser#blockItem}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlockItem2(calcParser.BlockItem2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt1}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt1(calcParser.Stmt1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt2}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt2(calcParser.Stmt2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt3}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt3(calcParser.Stmt3Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#exp}.
 	 * @param ctx the parse tree
@@ -40,33 +133,32 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExp(calcParser.ExpContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code addExp2}
-	 * labeled alternative in {@link calcParser#addExp}.
+	 * Visit a parse tree produced by {@link calcParser#lVal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAddExp2(calcParser.AddExp2Context ctx);
+	T visitLVal(calcParser.LValContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code addExp1}
-	 * labeled alternative in {@link calcParser#addExp}.
+	 * Visit a parse tree produced by the {@code primaryExp1}
+	 * labeled alternative in {@link calcParser#primaryExp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAddExp1(calcParser.AddExp1Context ctx);
+	T visitPrimaryExp1(calcParser.PrimaryExp1Context ctx);
 	/**
-	 * Visit a parse tree produced by the {@code mulExp2}
-	 * labeled alternative in {@link calcParser#mulExp}.
+	 * Visit a parse tree produced by the {@code primaryExp2}
+	 * labeled alternative in {@link calcParser#primaryExp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMulExp2(calcParser.MulExp2Context ctx);
+	T visitPrimaryExp2(calcParser.PrimaryExp2Context ctx);
 	/**
-	 * Visit a parse tree produced by the {@code mulExp1}
-	 * labeled alternative in {@link calcParser#mulExp}.
+	 * Visit a parse tree produced by the {@code primaryExp3}
+	 * labeled alternative in {@link calcParser#primaryExp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMulExp1(calcParser.MulExp1Context ctx);
+	T visitPrimaryExp3(calcParser.PrimaryExp3Context ctx);
 	/**
 	 * Visit a parse tree produced by the {@code unaryExp1}
 	 * labeled alternative in {@link calcParser#unaryExp}.
@@ -82,19 +174,46 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUnaryExp2(calcParser.UnaryExp2Context ctx);
 	/**
-	 * Visit a parse tree produced by the {@code primaryExp1}
-	 * labeled alternative in {@link calcParser#primaryExp}.
+	 * Visit a parse tree produced by the {@code unaryExp3}
+	 * labeled alternative in {@link calcParser#unaryExp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrimaryExp1(calcParser.PrimaryExp1Context ctx);
+	T visitUnaryExp3(calcParser.UnaryExp3Context ctx);
 	/**
-	 * Visit a parse tree produced by the {@code primaryExp2}
-	 * labeled alternative in {@link calcParser#primaryExp}.
+	 * Visit a parse tree produced by the {@code mulExp2}
+	 * labeled alternative in {@link calcParser#mulExp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrimaryExp2(calcParser.PrimaryExp2Context ctx);
+	T visitMulExp2(calcParser.MulExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mulExp1}
+	 * labeled alternative in {@link calcParser#mulExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMulExp1(calcParser.MulExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code addExp2}
+	 * labeled alternative in {@link calcParser#addExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddExp2(calcParser.AddExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code addExp1}
+	 * labeled alternative in {@link calcParser#addExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddExp1(calcParser.AddExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#constExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstExp(calcParser.ConstExpContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#number}.
 	 * @param ctx the parse tree
