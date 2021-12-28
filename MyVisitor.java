@@ -224,7 +224,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.printf("br i1 %%%d ,label %%%d,label %%%d\n\n",case2_ret,case2_reg_1,case2_reg_2);
                 System.out.printf("%d:\n",case2_reg_1);
                 visit(ctx.stmt(0));
-                System.out.printf("br label %%%d\n\n",case2_reg_2);//nt wrong
+                System.out.printf("br label %%%d\n\n",case2_reg_3);//nt wrong
                 System.out.printf("%d:\n",case2_reg_2);
                 visit(ctx.stmt(1));
                 System.out.printf("br label %%%d\n\n",case2_reg_3);
