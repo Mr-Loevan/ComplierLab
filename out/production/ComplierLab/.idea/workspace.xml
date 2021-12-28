@@ -55,13 +55,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -94,7 +96,8 @@
       <workItem from="1640522333652" duration="1671000" />
       <workItem from="1640524914701" duration="5846000" />
       <workItem from="1640609699847" duration="13561000" />
-      <workItem from="1640664244857" duration="15902000" />
+      <workItem from="1640664244857" duration="17643000" />
+      <workItem from="1640689729255" duration="4582000" />
     </task>
     <servers />
   </component>
@@ -106,7 +109,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/MyVisitor.java</url>
-          <line>193</line>
+          <line>200</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

@@ -50,17 +50,134 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         blockname = funcName;
         memory.put(blockname,0);
         System.out.println("()");
+        System.out.println("{");
         visit(ctx.block());
+        System.out.println("}");
         return 0;
     }
 
     @Override public Integer visitBlock(calcParser.BlockContext ctx){
-        System.out.println('{');
+//        System.out.println('{');
         ctx.blockItem().forEach(blockItemContext -> {visit(blockItemContext);});
-        System.out.println('}');
+//        System.out.println('}');
         return 0;
     }
-//    stmt:   lVal'='exp';' #stmt1|
+//    cond:lOrExp;
+//    lOrExp: lAndExp #lOrExp1
+//        |lOrExp'||'lAndExp #lOrExp2;
+//lorExp lAndExp cond 最终都是i1
+    @Override
+    public Integer visitCond(calcParser.CondContext ctx) {
+        return visit(ctx.lOrExp());
+    }
+
+    @Override
+    public Integer visitLOrExp2(calcParser.LOrExp2Context ctx) {
+        int l = visit(ctx.lOrExp());
+        int r = visit(ctx.lAndExp());
+        int reg = memory.get(blockname);
+        reg++;
+        memory.put(blockname,reg++);
+        System.out.printf("%%%d = or i1 %%%d,%%%d\n",reg,l,r);//要求左右均是i1
+        return reg;
+    }
+    //    lAndExp:eqExp   #lAndExp1
+//        |lAndExp'&&'eqExp   #lAndExp2;
+    @Override
+    public Integer visitLAndExp1(calcParser.LAndExp1Context ctx) {
+        int val = visit(ctx.eqExp());
+        int reg = memory.get(blockname);
+        reg++;
+        memory.put(blockname,reg);
+        System.out.printf("%%%d = icmp eq i32 1, %%%d\n",reg,val);
+        return reg;
+    }
+
+    @Override
+    public Integer visitLAndExp2(calcParser.LAndExp2Context ctx) {
+        int l = visit(ctx.lAndExp());
+        int r = visit(ctx.eqExp());
+        int reg = memory.get(blockname);
+        reg++;
+        memory.put(blockname,reg);
+        System.out.printf("%%%d = icmp eq i32 1, %%%d\n",reg,r);
+        int new_reg = memory.get(blockname);new_reg++;
+        memory.put(blockname,new_reg);
+        System.out.printf("%%%d = and i1 %%%d,%%%d\n",new_reg,l,reg);
+        return new_reg;
+    }
+    //    eqExp:relExp    #eqExp1
+//        |eqExp EqOp relExp     #eqExp2;
+//    eqExp都是i32
+    @Override
+    public Integer visitEqExp1(calcParser.EqExp1Context ctx) {
+        return visit(ctx.relExp());
+    }
+
+    @Override
+    public Integer visitEqExp2(calcParser.EqExp2Context ctx) {
+        String s = ctx.EqOp().getText();
+        int l = visit(ctx.eqExp());
+        int r = visit(ctx.relExp());
+        int reg1,reg2;
+        reg1 = memory.get(blockname);
+        reg1++;
+        memory.put(blockname,reg1);
+        reg2 = memory.get(blockname);
+        reg2++;
+        memory.put(blockname,reg2);
+        switch (s){
+            case "==":
+                System.out.printf("%%%d = icmp eq i32 %%%d, %%%d\n",reg1,l,r);
+                break;
+            case "!=":
+                System.out.printf("%%%d = icmp ne i32 %%%d, %%%d\n",reg1,l,r);
+                break;
+        }
+        System.out.printf("%%%d = zext i1 %%%d to i32\n",reg2,reg1);
+        return reg2;
+    }
+    //    relExp:addExp   #relExp1
+//        |relExp CmpOp addExp  #relExp2;
+//    relExp 都是i32
+//    CmpOp:'<'|'>'|'<''='|'>''=';
+    @Override
+    public Integer visitRelExp1(calcParser.RelExp1Context ctx) {
+        return visit(ctx.addExp());
+    }
+
+    @Override
+    public Integer visitRelExp2(calcParser.RelExp2Context ctx) {
+        int l = visit(ctx.relExp());
+        int r = visit(ctx.addExp());
+        int reg_1 = memory.get(blockname);
+        reg_1++;
+        memory.put(blockname,reg_1);
+        String s = ctx.CmpOp().getText();
+        switch (s){
+            case "<":
+                System.out.printf("%%%d = icmp slt i32 %%%d, %%%d\n",reg_1,l,r);
+                break;
+            case "<=":
+                System.out.printf("%%%d = icmp sle i32 %%%d, %%%d\n",reg_1,l,r);
+                break;
+            case ">":
+                System.out.printf("%%%d = icmp sgt i32 %%%d, %%%d\n",reg_1,l,r);
+                break;
+            case ">=":
+                System.out.printf("%%%d = icmp sge i32 %%%d, %%%d\n",reg_1,l,r);
+                break;
+            default:
+                System.exit(-1);
+        }
+        int reg_2 = memory.get(blockname);
+        reg_2++;
+        memory.put(blockname,reg_2);
+        System.out.printf("%%%d = zext i1 %%%d to i32\n",reg_2,reg_1);
+        return reg_2;
+    }
+
+    //    stmt:   lVal'='exp';' #stmt1|
 //            (exp)? ';'#stmt2|
 //            'if' '(' cond ')'stmt ( 'else' stmt )?#stmt3|
 //    block  #stmt4|
@@ -68,6 +185,47 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitStmt5(calcParser.Stmt5Context ctx) {
         System.out.println("ret i32 %"+visit(ctx.exp()));
+        return 0;
+    }
+    @Override
+    public Integer visitStmt3(calcParser.Stmt3Context ctx) {
+        int seg = ctx.stmt().size();
+        switch (seg){
+            case 1:
+                int ret = visit(ctx.cond());
+                int reg_1 = memory.get(blockname);
+                reg_1++;
+                memory.put(blockname,reg_1);
+                int reg_2 = memory.get(blockname);
+                reg_2++;
+                memory.put(blockname,reg_2);
+                System.out.printf("br i1 %%%d ,label %%%d,label %%%d\n\n",ret,reg_1,reg_2);
+                System.out.printf("%d:\n",reg_1);
+                visit(ctx.stmt(0));
+                System.out.printf("br label %%%d\n\n",reg_2);
+                System.out.printf("%d:\n",reg_2);
+                break;
+            case 2:
+                int case2_ret = visit(ctx.cond());
+                int case2_reg_1 = memory.get(blockname);
+                case2_reg_1++;
+                memory.put(blockname,case2_reg_1);
+                int case2_reg_2 = memory.get(blockname);
+                case2_reg_2++;
+                memory.put(blockname,case2_reg_2);
+                int case2_reg_3 = memory.get(blockname);
+                case2_reg_3++;
+                memory.put(blockname,case2_reg_3);
+                System.out.printf("br i1 %%%d ,label %%%d,label %%%d\n\n",case2_ret,case2_reg_1,case2_reg_2);
+                System.out.printf("%d:\n",case2_reg_1);
+                visit(ctx.stmt(0));
+                System.out.printf("br label %%%d\n\n",case2_reg_3);
+                System.out.printf("%d:\n",case2_reg_2);
+                visit(ctx.stmt(1));
+                System.out.printf("br label %%%d\n\n",case2_reg_3);
+                System.out.printf("%d:\n",case2_reg_3);
+                break;
+        }
         return 0;
     }
 
@@ -148,10 +306,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         return visit(ctx.constExp());
     }
 
-    @Override
-    public Integer visitExp(calcParser.ExpContext ctx) {
-        return visit(ctx.addExp());
-    }
+//    @Override
+//    public Integer visitExp(calcParser.ExpContext ctx) {
+//        return visit(ctx.addExp());
+//    }
 
     @Override
     public Integer visitAddExp1(calcParser.AddExp1Context ctx) {
@@ -229,6 +387,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             case "-":
                 System.out.printf("%%%d = sub i32 0, %%%d\n",time,val);
                 break;
+            case "!":
+                System.out.printf("%%%d = icmp eq i32 0, %%%d\n",time,val);
+                int new_reg  = memory.get(blockname);
+                new_reg++;
+                memory.replace(blockname,new_reg);
+                System.out.printf("%%%d = zext i1 %%%d to i32\n",new_reg,time);
+                return new_reg;
             default:
                 System.out.println(op);
                 System.exit(-1);

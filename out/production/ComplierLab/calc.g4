@@ -20,8 +20,19 @@ blockItem:decl#blockItem1|
           stmt#blockItem2;
 stmt:   lVal'='exp';' #stmt1|
         (exp)? ';'#stmt2|
-        'return' exp ';'#stmt3;
+        'if' '(' cond ')'stmt ( 'else' stmt )?#stmt3|
+         block  #stmt4|
+        'return' exp ';'#stmt5;
 exp: addExp;
+cond:lOrExp;
+lOrExp: lAndExp #lOrExp1
+        |lOrExp'||'lAndExp #lOrExp2;
+lAndExp:eqExp   #lAndExp1
+        |lAndExp'&&'eqExp   #lAndExp2;
+eqExp:relExp    #eqExp1
+        |eqExp EqOp relExp     #eqExp2;
+relExp:addExp   #relExp1
+        |relExp CmpOp addExp  #relExp2;
 
 lVal: Ident;
 primaryExp: '('exp')'   #primaryExp1
@@ -43,8 +54,10 @@ number2: Octal_const;
 number3: Hexadecimal_const;
 
 BType:'int';
-UnaryOp: '+'|'-';
+UnaryOp: '+'|'-'|'!';
 MulOp:'*'|'/'|'%';
+EqOp:'!='|'==';
+CmpOp:'<'|'>'|'<''='|'>''=';
 Decimal_const: Nonzero_digit Digit*;
 Octal_const: '0' Octal_digit*;
 Hexadecimal_const: Hexadecimal_prefix Hexadecimal_digit+;
