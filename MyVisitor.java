@@ -311,7 +311,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         }else if(constVarTable.get(s)!=null){
             int addr = constVarTable.get(s);
             memory.replace(blockname,reg);
-            System.out.println("%%%d = add i32 0, %" +constVarTable.get(s));
+            System.out.printf("%%%d = add i32 0, %%%d\n", reg,constVarTable.get(s));
         }else
             System.exit(-1);
         return reg;
