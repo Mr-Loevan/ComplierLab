@@ -1,6 +1,6 @@
 grammar calc;
 
-compUnit:funcDef;
+compUnit:(decl)*funcDef;
 decl:   constdecl #decl1
         |varDecl #decl2;
 constdecl: 'const' BType constDef ( ',' constDef )* ';';
