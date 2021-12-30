@@ -37,12 +37,13 @@
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Vector;
-
 public class MyVisitor extends calcBaseVisitor<Integer>{
     String blockname;
     Map<String, Integer> memory = new HashMap<>();
-    Map<String, Integer> varTable = new HashMap<>();
-    Map<String, Integer> constVarTable = new HashMap<>();
+    VarTable varTable = new VarTable();
+    VarTable constVarTable = new VarTable();
+//    Map<String, Integer> varTable = new HashMap<>();
+//    Map<String, Integer> constVarTable = new HashMap<>();
     @Override public Integer visitFuncDef(calcParser.FuncDefContext ctx) {
         String funcName = ctx.Ident().getText();
         System.out.print("define dso_local i32 @");
@@ -57,9 +58,12 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     }
 
     @Override public Integer visitBlock(calcParser.BlockContext ctx){
-//        System.out.println('{');
+        varTable.pushIn();
+        constVarTable.pushIn();
         ctx.blockItem().forEach(blockItemContext -> {visit(blockItemContext);});
 //        System.out.println('}');
+        varTable.popOut();
+        constVarTable.popOut();
         return 0;
     }
 //    cond:lOrExp;
@@ -255,7 +259,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitVarDef1(calcParser.VarDef1Context ctx) {
        String s = ctx.Ident().getText();
        int reg = memory.get(blockname);
-       if(varTable.get(s)==null&&constVarTable.get(s)==null){
+       if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
            reg++;
            memory.replace(blockname,reg);
            varTable.put(s,reg);
@@ -270,7 +274,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         String s = ctx.Ident().getText();
         int val = visit(ctx.initVal());
         int reg = memory.get(blockname);
-        if(varTable.get(s)==null&&constVarTable.get(s)==null){
+        if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
             reg++;
             memory.replace(blockname,reg);
             varTable.put(s,reg);
@@ -298,7 +302,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitConstDef(calcParser.ConstDefContext ctx) {
         String s = ctx.Ident().getText();
         int reg = visit(ctx.constInitval());
-        if(varTable.get(s)==null&&constVarTable.get(s)==null){
+        if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
             constVarTable.put(s,reg);
         }else{
             System.exit(-1);
