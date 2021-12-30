@@ -71,6 +71,124 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitConstInitval(calcParser.ConstInitvalContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link calcParser#constExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstExp(calcParser.ConstExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link calcParser#constExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstExp(calcParser.ConstExpContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cAddExp1}
+	 * labeled alternative in {@link calcParser#cAddExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCAddExp1(calcParser.CAddExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cAddExp1}
+	 * labeled alternative in {@link calcParser#cAddExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCAddExp1(calcParser.CAddExp1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cAddExp2}
+	 * labeled alternative in {@link calcParser#cAddExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCAddExp2(calcParser.CAddExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cAddExp2}
+	 * labeled alternative in {@link calcParser#cAddExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCAddExp2(calcParser.CAddExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cMulExp2}
+	 * labeled alternative in {@link calcParser#cMulExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCMulExp2(calcParser.CMulExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cMulExp2}
+	 * labeled alternative in {@link calcParser#cMulExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCMulExp2(calcParser.CMulExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cMulExp1}
+	 * labeled alternative in {@link calcParser#cMulExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCMulExp1(calcParser.CMulExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cMulExp1}
+	 * labeled alternative in {@link calcParser#cMulExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCMulExp1(calcParser.CMulExp1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cUnaryExp1}
+	 * labeled alternative in {@link calcParser#cUnaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCUnaryExp1(calcParser.CUnaryExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cUnaryExp1}
+	 * labeled alternative in {@link calcParser#cUnaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCUnaryExp1(calcParser.CUnaryExp1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cUnaryExp2}
+	 * labeled alternative in {@link calcParser#cUnaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCUnaryExp2(calcParser.CUnaryExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cUnaryExp2}
+	 * labeled alternative in {@link calcParser#cUnaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCUnaryExp2(calcParser.CUnaryExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cPrimaryExp1}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCPrimaryExp1(calcParser.CPrimaryExp1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cPrimaryExp1}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCPrimaryExp1(calcParser.CPrimaryExp1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cPrimaryExp2}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCPrimaryExp2(calcParser.CPrimaryExp2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cPrimaryExp2}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCPrimaryExp2(calcParser.CPrimaryExp2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cPrimaryExp3}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCPrimaryExp3(calcParser.CPrimaryExp3Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cPrimaryExp3}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCPrimaryExp3(calcParser.CPrimaryExp3Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link calcParser#varDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -474,16 +592,6 @@ public interface calcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAddExp1(calcParser.AddExp1Context ctx);
-	/**
-	 * Enter a parse tree produced by {@link calcParser#constExp}.
-	 * @param ctx the parse tree
-	 */
-	void enterConstExp(calcParser.ConstExpContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link calcParser#constExp}.
-	 * @param ctx the parse tree
-	 */
-	void exitConstExp(calcParser.ConstExpContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link calcParser#number}.
 	 * @param ctx the parse tree

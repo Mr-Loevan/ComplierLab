@@ -39,11 +39,20 @@ import java.util.HashMap;
 import java.util.Vector;
 public class MyVisitor extends calcBaseVisitor<Integer>{
     String blockname;
+    //public static boolean isGlobal  = true;
     Map<String, Integer> memory = new HashMap<>();
     VarTable varTable = new VarTable();
     VarTable constVarTable = new VarTable();
 //    Map<String, Integer> varTable = new HashMap<>();
 //    Map<String, Integer> constVarTable = new HashMap<>();
+
+    @Override
+    public Integer visitCompUnit(calcParser.CompUnitContext ctx) {
+        varTable.pushIn();//最低层存放全局变量
+        constVarTable.pushIn();
+        return super.visitCompUnit(ctx);
+    }
+
     @Override public Integer visitFuncDef(calcParser.FuncDefContext ctx) {
         String funcName = ctx.Ident().getText();
         System.out.print("define dso_local i32 @");
@@ -259,11 +268,19 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitVarDef1(calcParser.VarDef1Context ctx) {
        String s = ctx.Ident().getText();
        int reg = memory.get(blockname);
-       if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
+       if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){//在当前层符号表无
            reg++;
            memory.replace(blockname,reg);
-           varTable.put(s,reg);
-           System.out.printf("%%x%d = alloca i32\n",reg);
+           //判断是否为全局变量
+           boolean isGlobal = varTable.isGlobal();
+           if (!isGlobal) {
+               varTable.put(s,reg);
+               System.out.printf("%%x%d = alloca i32\n",reg);
+           }else{
+               varTable.put(s,reg);
+               //todo 还不知道该赋值多少
+//               System.out.printf("@%d = dso_local global i32 %d\n");
+           }
        }else
            System.exit(-1);
        return reg;
@@ -277,9 +294,16 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
             reg++;
             memory.replace(blockname,reg);
-            varTable.put(s,reg);
-            System.out.printf("%%x%d = alloca i32\n",reg);
-            System.out.printf("store i32 %%x%d, i32* %%x%d\n",val,reg);
+            boolean isGlobal = varTable.isGlobal();
+            if(!isGlobal){
+                varTable.put(s,reg);
+                System.out.printf("%%x%d = alloca i32\n",reg);
+                System.out.printf("store i32 %%x%d, i32* %%x%d\n",val,reg);
+            }else{
+                varTable.put(s,reg);
+                System.out.printf("@%d = dso_local global i32 %d\n",reg,val);
+            }
+
         }else
             System.exit(-1);
         return reg;
@@ -293,10 +317,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //    constDef:Ident '=' constInitval;
 //    constInitval: constExp;
 
-    @Override
-    public Integer visitConstExp(calcParser.ConstExpContext ctx) {
-        return visit(ctx.addExp());
-    }
+//    @Override
+//    public Integer visitConstExp(calcParser.ConstExpContext ctx) {
+//        return visit(ctx.addExp());
+//    }
 
     @Override
     public Integer visitConstDef(calcParser.ConstDefContext ctx) {
@@ -506,5 +530,108 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         String s = ctx.Hexadecimal_const().getText();
         return Integer.parseInt(s.substring(2),16);
     }
+
+
+
+
+    @Override public Integer visitConstExp(calcParser.ConstExpContext ctx){
+        return visit(ctx.cAddExp());
+    }
+
+
+
+    /*
+cPrimaryExp : '(' constExp ')' #cPrimaryExp1|
+                number #cPrimaryExp2|
+                lVal #cPrimaryExp3;
+    */
+
+    @Override
+    public Integer visitCPrimaryExp1(calcParser.CPrimaryExp1Context ctx) {
+        return visit(ctx.constExp());
+    }
+
+    @Override
+    public Integer visitCPrimaryExp2(calcParser.CPrimaryExp2Context ctx) {
+        return visit(ctx.number());
+    }
+
+    @Override
+    public Integer visitCPrimaryExp3(calcParser.CPrimaryExp3Context ctx){
+        String s = ctx.lVal().getText();
+        if(constVarTable.get(s)!=null){
+            return constVarTable.get(s);
+        }else {
+            System.out.println("visitCPrimaryExp3");
+            System.exit(-1);
+        }
+        return 0;
+    }
+    /*
+cUnaryExp:cPrimaryExp #cUnaryExp1|
+           UnaryOp cUnaryExp #cUnaryExp2;
+     */
+    @Override public Integer visitCUnaryExp1(calcParser.CUnaryExp1Context ctx){
+        return visit(ctx.cPrimaryExp());
+    }
+
+    @Override public Integer visitCUnaryExp2(calcParser.CUnaryExp2Context ctx){
+        String op = ctx.UnaryOp().getText();
+        switch (op){
+            case "+":
+                return visit(ctx.cUnaryExp());
+            case "-":
+                return -visit(ctx.cUnaryExp());
+            default:
+                System.exit(-1);
+        }
+        return 0;
+    }
+
+
+    /*
+cAddExp: cMulExp#cAddExp1|
+        cAddExp UnaryOp cMulExp#cAddExp2;//('+'|'-')
+     */
+    @Override
+    public Integer visitCAddExp1(calcParser.CAddExp1Context ctx){
+        return visit(ctx.cMulExp());
+    }
+
+    @Override
+    public Integer visitCAddExp2(calcParser.CAddExp2Context ctx){
+        String op = ctx.UnaryOp().getText();
+        switch (op){
+            case "+":
+                return visit(ctx.cAddExp()) + visit(ctx.cMulExp());
+            case "-":
+                return visit(ctx.cAddExp()) - visit(ctx.cMulExp());
+            default:
+                System.out.println("visitCAddExp2");
+                System.exit(-1);
+        }
+        return 0;
+    }
+
+    /*
+constMulExp: constUnaryExp #constMulExp1|
+    constMulExp MulOp constUnaryExp #constMulExp2;
+    */
+    @Override
+    public Integer visitCMulExp1(calcParser.CMulExp1Context ctx){
+        return visit(ctx.cUnaryExp());
+    }
+
+    @Override
+    public Integer visitCMulExp2(calcParser.CMulExp2Context ctx){
+        String op = ctx.MulOp().getText();
+        return switch (op) {
+            case "*" -> visit(ctx.cMulExp()) * visit(ctx.cUnaryExp());
+            case "/" -> visit(ctx.cMulExp()) / visit(ctx.cUnaryExp());
+            case "%" -> visit(ctx.cMulExp()) % visit(ctx.cUnaryExp());
+            default -> throw new IllegalStateException("Unexpected value: " + op);
+        };
+    }
+
 
 }

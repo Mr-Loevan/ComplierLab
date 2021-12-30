@@ -6,7 +6,18 @@ decl:   constdecl #decl1
 constdecl: 'const' BType constDef ( ',' constDef )* ';';
 constDef:Ident '=' constInitval;
 constInitval: constExp;
-
+//为了将常量表达式直接求值不得不重一大段文法、真麻烦。
+constExp:cAddExp;
+cAddExp: cMulExp#cAddExp1|
+        cAddExp UnaryOp cMulExp#cAddExp2;//('+'|'-')
+cMulExp: cUnaryExp #cMulExp1|
+        cMulExp MulOp cUnaryExp #cMulExp2;
+cUnaryExp:cPrimaryExp #cUnaryExp1|
+           UnaryOp cUnaryExp #cUnaryExp2;
+cPrimaryExp : '(' constExp ')' #cPrimaryExp1|
+                number #cPrimaryExp2|
+                lVal #cPrimaryExp3;
+// 为了将常量表达式直接求值不得不重一大段文法、真麻烦。至此所有的常量的对应键值就是实际的val 而不是虚拟寄存器reg
 varDecl:BType varDef (',' varDef)* ';';
 varDef:Ident#varDef1|
        Ident '='initVal#varDef2;
@@ -46,7 +57,7 @@ mulExp: unaryExp    #mulExp1|
 addExp: mulExp  #addExp1|
         addExp UnaryOp mulExp   #addExp2;
 
-constExp:addExp;
+
 
 number: number1|number2|number3;
 number1: Decimal_const;
