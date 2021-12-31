@@ -86,7 +86,14 @@ public class calcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements c
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitConstInitval(calcParser.ConstInitvalContext ctx) { return visitChildren(ctx); }
+	@Override public T visitConstInitval1(calcParser.ConstInitval1Context ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitConstInitval2(calcParser.ConstInitval2Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -184,7 +191,14 @@ public class calcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements c
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitInitVal(calcParser.InitValContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInitVal1(calcParser.InitVal1Context ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInitVal2(calcParser.InitVal2Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -135,13 +135,25 @@ public class calcBaseListener implements calcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConstInitval(calcParser.ConstInitvalContext ctx) { }
+	@Override public void enterConstInitval1(calcParser.ConstInitval1Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitConstInitval(calcParser.ConstInitvalContext ctx) { }
+	@Override public void exitConstInitval1(calcParser.ConstInitval1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConstInitval2(calcParser.ConstInitval2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConstInitval2(calcParser.ConstInitval2Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -303,13 +315,25 @@ public class calcBaseListener implements calcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInitVal(calcParser.InitValContext ctx) { }
+	@Override public void enterInitVal1(calcParser.InitVal1Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInitVal(calcParser.InitValContext ctx) { }
+	@Override public void exitInitVal1(calcParser.InitVal1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInitVal2(calcParser.InitVal2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInitVal2(calcParser.InitVal2Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

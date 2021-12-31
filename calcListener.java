@@ -119,15 +119,29 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitConstDef(calcParser.ConstDefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link calcParser#constInitval}.
+	 * Enter a parse tree produced by the {@code constInitval1}
+	 * labeled alternative in {@link calcParser#constInitval}.
 	 * @param ctx the parse tree
 	 */
-	void enterConstInitval(calcParser.ConstInitvalContext ctx);
+	void enterConstInitval1(calcParser.ConstInitval1Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link calcParser#constInitval}.
+	 * Exit a parse tree produced by the {@code constInitval1}
+	 * labeled alternative in {@link calcParser#constInitval}.
 	 * @param ctx the parse tree
 	 */
-	void exitConstInitval(calcParser.ConstInitvalContext ctx);
+	void exitConstInitval1(calcParser.ConstInitval1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code constInitval2}
+	 * labeled alternative in {@link calcParser#constInitval}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstInitval2(calcParser.ConstInitval2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code constInitval2}
+	 * labeled alternative in {@link calcParser#constInitval}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstInitval2(calcParser.ConstInitval2Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link calcParser#constExp}.
 	 * @param ctx the parse tree
@@ -281,15 +295,29 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitVarDef2(calcParser.VarDef2Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link calcParser#initVal}.
+	 * Enter a parse tree produced by the {@code initVal1}
+	 * labeled alternative in {@link calcParser#initVal}.
 	 * @param ctx the parse tree
 	 */
-	void enterInitVal(calcParser.InitValContext ctx);
+	void enterInitVal1(calcParser.InitVal1Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link calcParser#initVal}.
+	 * Exit a parse tree produced by the {@code initVal1}
+	 * labeled alternative in {@link calcParser#initVal}.
 	 * @param ctx the parse tree
 	 */
-	void exitInitVal(calcParser.InitValContext ctx);
+	void exitInitVal1(calcParser.InitVal1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code initVal2}
+	 * labeled alternative in {@link calcParser#initVal}.
+	 * @param ctx the parse tree
+	 */
+	void enterInitVal2(calcParser.InitVal2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code initVal2}
+	 * labeled alternative in {@link calcParser#initVal}.
+	 * @param ctx the parse tree
+	 */
+	void exitInitVal2(calcParser.InitVal2Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link calcParser#funcDef}.
 	 * @param ctx the parse tree
