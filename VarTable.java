@@ -44,4 +44,16 @@ public class VarTable {
     public boolean isGlobal(){
         return this.varTables.size() == 1;
     }
+    public boolean isGlobal(String s){//²»ĞèÒª¿¼ÂÇ
+        int len = varTables.size();
+        for(int i=len-1; i >0;i--){
+            if(varTables.get(i).get(s)!=null){
+                return false;
+            }
+        }
+        if(varTables.get(0).get(s)==null){
+            return false;
+        }
+        return true;
+    }
 }

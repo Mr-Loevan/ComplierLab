@@ -1,6 +1,13 @@
 grammar calc;
 
-compUnit:(decl)*funcDef;
+compUnit:(gdecl)*funcDef;
+gdecl: constdecl #gdecl1
+       |gvarDecl #gdecl2;
+gvarDecl: BType gvarDef (',' gvarDef)* ';';
+gvarDef: Ident#gvarDef1|
+         Ident '='constInitval#gvarDef2;
+//上面是用于全局变量的文法定义，目的是为了const init val 获得计算出来的值而不是虚拟寄存器。
+//我尼玛快被自己写的煞笔东西恶心死了。
 decl:   constdecl #decl1
         |varDecl #decl2;
 constdecl: 'const' BType constDef ( ',' constDef )* ';';

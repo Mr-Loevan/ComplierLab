@@ -17,6 +17,64 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitCompUnit(calcParser.CompUnitContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code gdecl1}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterGdecl1(calcParser.Gdecl1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code gdecl1}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitGdecl1(calcParser.Gdecl1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code gdecl2}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterGdecl2(calcParser.Gdecl2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code gdecl2}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitGdecl2(calcParser.Gdecl2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link calcParser#gvarDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterGvarDecl(calcParser.GvarDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link calcParser#gvarDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitGvarDecl(calcParser.GvarDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code gvarDef1}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 */
+	void enterGvarDef1(calcParser.GvarDef1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code gvarDef1}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 */
+	void exitGvarDef1(calcParser.GvarDef1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code gvarDef2}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 */
+	void enterGvarDef2(calcParser.GvarDef2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code gvarDef2}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 */
+	void exitGvarDef2(calcParser.GvarDef2Context ctx);
+	/**
 	 * Enter a parse tree produced by the {@code decl1}
 	 * labeled alternative in {@link calcParser#decl}.
 	 * @param ctx the parse tree

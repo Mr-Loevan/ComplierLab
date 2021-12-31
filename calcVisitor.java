@@ -16,6 +16,40 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompUnit(calcParser.CompUnitContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code gdecl1}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGdecl1(calcParser.Gdecl1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code gdecl2}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGdecl2(calcParser.Gdecl2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#gvarDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGvarDecl(calcParser.GvarDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code gvarDef1}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGvarDef1(calcParser.GvarDef1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code gvarDef2}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGvarDef2(calcParser.GvarDef2Context ctx);
+	/**
 	 * Visit a parse tree produced by the {@code decl1}
 	 * labeled alternative in {@link calcParser#decl}.
 	 * @param ctx the parse tree
