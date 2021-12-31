@@ -323,7 +323,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             reg++;
             memory.replace(blockName,reg);
             varTable.put(s,reg);
-            System.out.printf("@%d = dso_local global i32 0\n",reg);
+            System.out.printf("@x%d = dso_local global i32 0\n",reg);
 //            System.out.println("after global");
 //            System.out.println(memory.get(blockName));
         }else{
