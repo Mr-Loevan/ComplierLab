@@ -226,7 +226,11 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int loopout = memory.get(blockName);loopout++;memory.replace(blockName,loopout);
         System.out.printf("br i1 %%x%d, label %%x%d, label %%x%d\n\n",ret,loopin,loopout);
         System.out.printf("x%d:\n",loopin);
-        visit(ctx.stmt());
+        try {
+            visit(ctx.stmt());
+        }catch (Exception e){
+            ;
+        }
         System.out.printf("br label %%x%d\n\n",reg);
         System.out.printf("x%d:\n",loopout);
         return 0;
