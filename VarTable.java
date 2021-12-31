@@ -44,7 +44,7 @@ public class VarTable {
     public boolean isGlobal(){
         return this.varTables.size() == 1;
     }
-    public boolean isGlobal(String s){//²»ĞèÒª¿¼ÂÇ
+    public boolean isGlobal(String s){//no need to consider const or not
         int len = varTables.size();
         for(int i=len-1; i >0;i--){
             if(varTables.get(i).get(s)!=null){
