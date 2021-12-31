@@ -37,6 +37,7 @@
 import java.sql.SQLOutput;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.Vector;
 public class MyVisitor extends calcBaseVisitor<Integer>{
     String blockName="VRegisters";
@@ -44,6 +45,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     Map<String, Integer> memory = new HashMap<>();
     VarTable varTable = new VarTable();
     VarTable constVarTable = new VarTable();
+    Stack<Integer> backFillWhile = new Stack<>();
+    //Stack<Integer> backFillLoopin = new Stack<>();
+    Stack<Integer> backFillLoopout = new Stack<>();
+
 //    Map<String, Integer> varTable = new HashMap<>();
 //    Map<String, Integer> constVarTable = new HashMap<>();
 
@@ -224,19 +229,37 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int ret = visit(ctx.cond());
         int loopin = memory.get(blockName);loopin++;memory.replace(blockName,loopin);
         int loopout = memory.get(blockName);loopout++;memory.replace(blockName,loopout);
+        backFillWhile.push(reg);
+        //backFillLoopin.push(loopin);
+        backFillLoopout.push(loopout);
         System.out.printf("br i1 %%x%d, label %%x%d, label %%x%d\n\n",ret,loopin,loopout);
         System.out.printf("x%d:\n",loopin);
-        try {
+        try {//这里可能会出现while(0);这种奇怪的东西 会导致stmt变成null所以只能特判。
             visit(ctx.stmt());
         }catch (Exception e){
             ;
         }
         System.out.printf("br label %%x%d\n\n",reg);
         System.out.printf("x%d:\n",loopout);
+        backFillWhile.pop();
+        backFillLoopout.pop();
+        //backFillLoopin.pop();
         return 0;
     }
     //         'break' ';'#stmt6|
     //         'continue' ';'#stmt7|
+
+    @Override
+    public Integer visitStmt6(calcParser.Stmt6Context ctx) {
+        System.out.printf("br label %%x%d\n",backFillLoopout.peek());
+        return 0;
+    }
+
+    @Override
+    public Integer visitStmt7(calcParser.Stmt7Context ctx) {
+        System.out.printf("br label %%x%d\n",backFillWhile.peek());
+        return 0;
+    }
 
     @Override
     public Integer visitStmt3(calcParser.Stmt3Context ctx) {
