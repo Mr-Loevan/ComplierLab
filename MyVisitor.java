@@ -363,8 +363,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         return reg;
     }
 
-//    gvarDef: Ident#gvarDef1|
-//         Ident '='constInitval#gvarDef2;
+//    gvarDef: Ident('['constExp']')*#gvarDef1|
+//    Ident ('['constExp']')*'='constInitval#gvarDef2;
 // todo 解决了全局变量
     @Override
     public Integer visitGvarDef1(calcParser.GvarDef1Context ctx) {
@@ -412,7 +412,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 
     //  initVal:exp;
     @Override
-    public Integer visitInitVal(calcParser.InitValContext ctx) {
+    public Integer visitInitVal1(calcParser.InitVal1Context ctx) {
         return visit(ctx.exp());
     }
 //  constdecl: 'const' BType constDef ( ',' constDef )* ';';
@@ -444,7 +444,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     }
 
     @Override
-    public Integer visitConstInitval(calcParser.ConstInitvalContext ctx) {
+    public Integer visitConstInitval1(calcParser.ConstInitval1Context ctx) {
         return visit(ctx.constExp());
     }
 
