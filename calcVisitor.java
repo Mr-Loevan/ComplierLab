@@ -244,6 +244,27 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStmt5(calcParser.Stmt5Context ctx);
 	/**
+	 * Visit a parse tree produced by the {@code stmt6}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt6(calcParser.Stmt6Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt7}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt7(calcParser.Stmt7Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt8}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt8(calcParser.Stmt8Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link calcParser#exp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

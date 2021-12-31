@@ -405,6 +405,42 @@ public interface calcListener extends ParseTreeListener {
 	 */
 	void exitStmt5(calcParser.Stmt5Context ctx);
 	/**
+	 * Enter a parse tree produced by the {@code stmt6}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmt6(calcParser.Stmt6Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmt6}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmt6(calcParser.Stmt6Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmt7}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmt7(calcParser.Stmt7Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmt7}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmt7(calcParser.Stmt7Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmt8}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmt8(calcParser.Stmt8Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmt8}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmt8(calcParser.Stmt8Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link calcParser#exp}.
 	 * @param ctx the parse tree
 	 */

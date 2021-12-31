@@ -1,19 +1,20 @@
 grammar calc;
 
 compUnit:(gdecl)*funcDef;
+//ä¸‹é¢æ˜¯ç”¨äºå…¨å±€å˜é‡çš„æ–‡æ³•å®šä¹‰ï¼Œç›®çš„æ˜¯ä¸ºäº†const init val è·å¾—è®¡ç®—å‡ºæ¥çš„å€¼è€Œä¸æ˜¯è™šæ‹Ÿå¯„å­˜å™¨ã€‚
 gdecl: constdecl #gdecl1
        |gvarDecl #gdecl2;
 gvarDecl: BType gvarDef (',' gvarDef)* ';';
 gvarDef: Ident#gvarDef1|
          Ident '='constInitval#gvarDef2;
-//ÉÏÃæÊÇÓÃÓÚÈ«¾Ö±äÁ¿µÄÎÄ·¨¶¨Òå£¬Ä¿µÄÊÇÎªÁËconst init val »ñµÃ¼ÆËã³öÀ´µÄÖµ¶ø²»ÊÇĞéÄâ¼Ä´æÆ÷¡£
-//ÎÒÄáÂê¿ì±»×Ô¼ºĞ´µÄÉ·±Ê¶«Î÷¶ñĞÄËÀÁË¡£
+//ä¸Šé¢æ˜¯ç”¨äºå…¨å±€å˜é‡çš„æ–‡æ³•å®šä¹‰ï¼Œç›®çš„æ˜¯ä¸ºäº†const init val è·å¾—è®¡ç®—å‡ºæ¥çš„å€¼è€Œä¸æ˜¯è™šæ‹Ÿå¯„å­˜å™¨ã€‚
+//æˆ‘å°¼ç›å¿«è¢«å†™çš„ç…ç¬”ä¸œè¥¿æ¶å¿ƒæ­»äº†ã€‚
 decl:   constdecl #decl1
         |varDecl #decl2;
 constdecl: 'const' BType constDef ( ',' constDef )* ';';
 constDef:Ident '=' constInitval;
 constInitval: constExp;
-//ÎªÁË½«³£Á¿±í´ïÊ½Ö±½ÓÇóÖµ²»µÃ²»ÖØÒ»´ó¶ÎÎÄ·¨¡¢ÕæÂé·³¡£
+//ä¸ºäº†å°†å¸¸é‡è¡¨è¾¾å¼ç›´æ¥æ±‚å€¼ä¸å¾—ä¸é‡ä¸€å¤§æ®µæ–‡æ³•ã€çœŸéº»çƒ¦ã€‚
 constExp:cAddExp;
 cAddExp: cMulExp#cAddExp1|
         cAddExp UnaryOp cMulExp#cAddExp2;//('+'|'-')
@@ -24,7 +25,7 @@ cUnaryExp:cPrimaryExp #cUnaryExp1|
 cPrimaryExp : '(' constExp ')' #cPrimaryExp1|
                 number #cPrimaryExp2|
                 lVal #cPrimaryExp3;
-// ÎªÁË½«³£Á¿±í´ïÊ½Ö±½ÓÇóÖµ²»µÃ²»ÖØÒ»´ó¶ÎÎÄ·¨¡¢ÕæÂé·³¡£ÖÁ´ËËùÓĞµÄ³£Á¿µÄ¶ÔÓ¦¼üÖµ¾ÍÊÇÊµ¼ÊµÄval ¶ø²»ÊÇĞéÄâ¼Ä´æÆ÷reg
+// ä¸ºäº†å°†å¸¸é‡è¡¨è¾¾å¼ç›´æ¥æ±‚å€¼ä¸å¾—ä¸é‡ä¸€å¤§æ®µæ–‡æ³•ã€çœŸéº»çƒ¦ã€‚è‡³æ­¤æ‰€æœ‰çš„å¸¸é‡çš„å¯¹åº”é”®å€¼å°±æ˜¯å®é™…çš„val è€Œä¸æ˜¯è™šæ‹Ÿå¯„å­˜å™¨reg
 varDecl:BType varDef (',' varDef)* ';';
 varDef:Ident#varDef1|
        Ident '='initVal#varDef2;
@@ -40,7 +41,10 @@ stmt:   lVal'='exp';' #stmt1|
         (exp)? ';'#stmt2|
         'if' '(' cond ')'stmt ( 'else' stmt )?#stmt3|
          block  #stmt4|
-        'return' exp ';'#stmt5;
+         'while' '(' cond ')' stmt#stmt5|
+         'break' ';'#stmt6|
+         'continue' ';'#stmt7|
+        'return' exp ';'#stmt8;
 exp: addExp;
 cond:lOrExp;
 lOrExp: lAndExp #lOrExp1

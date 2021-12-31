@@ -199,17 +199,40 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     }
 
     //    stmt:   lVal'='exp';' #stmt1|
-//            (exp)? ';'#stmt2|
-//            'if' '(' cond ')'stmt ( 'else' stmt )?#stmt3|
-//    block  #stmt4|
-//            'return' exp ';'#stmt5;
-    //todo 所有和lval有关的都要改@形式
+    //        (exp)? ';'#stmt2|
+    //        'if' '(' cond ')'stmt ( 'else' stmt )?#stmt3|
+    //         block  #stmt4|
+
+    //         'break' ';'#stmt6|
+    //         'continue' ';'#stmt7|
+    //        'return' exp ';'#stmt8;
+    //todo 所有和lval有关的都要改@形式 
+    // TODO: 2021/12/31 已解决 改变所有lval
     //todo 不知道为什么reg增长数有奇怪。
+    // TODO: 2021/12/31 已解决，之前在funcname时会有重新定义blockname。不需要
     @Override
-    public Integer visitStmt5(calcParser.Stmt5Context ctx) {
+    public Integer visitStmt8(calcParser.Stmt8Context ctx) {
         System.out.println("ret i32 %x"+visit(ctx.exp()));
         return 0;
     }
+    //         'while' '(' cond ')' stmt #stmt5|
+    @Override
+    public Integer visitStmt5(calcParser.Stmt5Context ctx) {
+        int reg = memory.get(blockName);reg++;
+        memory.replace(blockName,reg);
+        System.out.printf("br label %%x%d\n\n",reg);
+        System.out.printf("x%d:\n",reg);
+        int ret = visit(ctx.cond());
+        int loopin = memory.get(blockName);loopin++;memory.replace(blockName,loopin);
+        int loopout = memory.get(blockName);loopout++;memory.replace(blockName,loopout);
+        System.out.printf("br i1 %%x%d, label %%x%d, label %%x%d\n\n",ret,loopin,loopout);
+        System.out.printf("x%d:\n",loopin);
+        visit(ctx.stmt());
+        System.out.printf("br label %%x%d\n\n",reg);
+        System.out.printf("x%d:\n",loopout);
+        return 0;
+    }
+
     @Override
     public Integer visitStmt3(calcParser.Stmt3Context ctx) {
         int seg = ctx.stmt().size();
