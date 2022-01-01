@@ -34,11 +34,8 @@
 //        LINE_COMMENT:'//' .*? '\r'? '\n'{skip();} ;
 //        BLOCK_COMMENT:'/*' .*? '*/' {skip();};
 
-import java.sql.SQLOutput;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
+
 public class MyVisitor extends calcBaseVisitor<Integer>{
     String blockName="VRegisters";
     //public static boolean isGlobal  = true;
@@ -46,9 +43,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     VarTable varTable = new VarTable();
     VarTable constVarTable = new VarTable();
     Stack<Integer> backFillWhile = new Stack<>();
-    //Stack<Integer> backFillLoopin = new Stack<>();
     Stack<Integer> backFillLoopout = new Stack<>();
-
+    Integer curArrayDimension = 0;
+    Integer curArrayCol = 0;
+    int depth;
+    int pos;
+    ArrayList<Integer> index = new ArrayList<>();
+    ArrayList<Integer> put = new ArrayList<>();
 //    Map<String, Integer> varTable = new HashMap<>();
 //    Map<String, Integer> constVarTable = new HashMap<>();
 
@@ -369,45 +370,87 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitGvarDef1(calcParser.GvarDef1Context ctx) {
         String s = ctx.Ident().getText();
-        int reg = memory.get(blockName);
-        if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
-            reg++;
-            memory.replace(blockName,reg);
-            varTable.put(s,reg);
-            System.out.printf("@x%d = dso_local global i32 0\n",reg);
+        int dimension = ctx.constExp().size();//0维数组就是普通变量
+        switch (dimension){
+            case 0:
+                int reg = memory.get(blockName);
+                if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
+                    reg++;
+                    memory.replace(blockName,reg);
+                    varTable.put(s,reg);
+                    System.out.printf("@x%d = dso_local global i32 0\n",reg);
 //            System.out.println("after global");
 //            System.out.println(memory.get(blockName));
-        }else{
-            System.out.println("visitGvarDef1");
-            System.exit(-1);
+                }else{
+                    System.out.println("visitGvarDef1");
+                    System.exit(-1);
+                }
+                return reg;
+            default:
+                if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
+                    System.out.println("visitGvarDef2");
+                    System.exit(-1);
+                }
+                Vector<Integer> dimensions = new Vector<>();
+                ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
+                int reg_1 = memory.get(blockName);reg_1++;
+                memory.replace(blockName,reg_1);
+                varTable.putArray(s,reg_1,dimension,dimensions);
+                System.out.printf("@x%d = dso_local global [%d x i32] zeroinitializer\n",reg_1,varTable.getVar(s).capacity);
+                return reg_1;
         }
-        return reg;
     }
 
-    @Override
+    //    gvarDef: Ident('['constExp']')*#gvarDef1|
+//    Ident ('['constExp']')*'='constInitval#gvarDef2;
+
+    public void clearIntermediateVar(){
+        depth = 0;
+        pos = 0;
+        index.clear();
+        put.clear();
+    }
     public Integer visitGvarDef2(calcParser.GvarDef2Context ctx) {
         String s = ctx.Ident().getText();
-
-        //try{
-        int reg = memory.get(blockName);
-//        }catch (Exception e){
-//            System.out.println("some thing wrong here");
-//            System.exit(-1);
-//        }
-
-        if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
-            reg++;
-            memory.replace(blockName,reg);
-            varTable.put(s,reg);
-            int val = visit(ctx.constInitval());
-            System.out.printf("@x%d = dso_local global i32 %d\n",reg,val);
+        int dimension = ctx.constExp().size();
+        switch (dimension) {
+            case 0:
+                int reg = memory.get(blockName);
+                if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
+                    reg++;
+                    memory.replace(blockName,reg);
+                    varTable.put(s,reg);
+                    int val = visit(ctx.constInitval());
+                    System.out.printf("@x%d = dso_local global i32 %d\n",reg,val);
 //            System.out.println("after global");
 //            System.out.println(memory.get(blockName));
-        }else{
-            System.out.println("visitGvarDef2");
-            System.exit(-1);
+                }else{
+                    System.out.println("visitGvarDef2");
+                    System.exit(-1);
+                }
+                return reg;
+            default:
+                if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
+                    System.out.println("visitGvarDef2");
+                    System.exit(-1);
+                }
+                Vector<Integer> dimensions = new Vector<>();
+                ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
+                int reg_1 = memory.get(blockName);reg_1++;
+                memory.replace(blockName,reg_1);
+                varTable.putArray(s,reg_1,dimension,dimensions);
+                System.out.printf("@x%d = dso_local global [%d x i32]",reg_1,varTable.getVar(s).capacity);
+                clearIntermediateVar();
+                visit(ctx.constInitval());
+                int j = 0;
+                boolean first = true;
+                System.out.print(" [");
+                outputPosAndIndex(j, first, varTable);
+                System.out.println("]");
+                clearIntermediateVar();
+                // TODO: 2021/12/31 全局变量数组后面初始化输出一坨常量
+                return reg_1;
         }
-        return reg;
     }
 
     //  initVal:exp;
@@ -417,7 +460,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     }
 //  constdecl: 'const' BType constDef ( ',' constDef )* ';';
 //constDef:Ident '=' constInitval;
-//constInitval: constExp;
+//    constInitval: constExp #constInitval1
+//              |'{' ( constInitval ( ',' constInitval )* )? '}' #constInitval2;
 ////为了将常量表达式直接求值不得不重一大段文法、真麻烦。
 //constExp:cAddExp;
 //cAddExp: cMulExp#cAddExp1|
@@ -430,25 +474,123 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //                number #cPrimaryExp2|
 //                lVal #cPrimaryExp3;
 //todo 解决了全局常量
+//    constDef:Ident ('['constExp']')* '=' constInitval;
     @Override
     public Integer visitConstDef(calcParser.ConstDefContext ctx) {
         String s = ctx.Ident().getText();
-        int reg = visit(ctx.constInitval());
-        if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
-            constVarTable.put(s,reg);
-        }else{
-            System.out.println("visitConstDef");
-            System.exit(-1);
+//        int reg = visit(ctx.constInitval());
+//        if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
+//            constVarTable.put(s,reg);
+//        }else{
+//            System.out.println("visitConstDef");
+//            System.exit(-1);
+//        }
+//        return reg;
+        int dimension = ctx.constExp().size();//0维数组就是普通变量
+        switch (dimension){
+            case 0:
+                int reg = visit(ctx.constInitval());
+                if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
+                    constVarTable.put(s,reg);
+                }else{
+                    System.out.println("visitConstDef");
+                    System.exit(-1);
+                }
+                return reg;
+//            System.out.println("after global");
+//            System.out.println(memory.get(blockName));
+            default:
+                if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
+                    System.out.println("visitConstDef");
+                    System.exit(-1);
+                }
+                Vector<Integer> dimensions = new Vector<>();
+                ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
+                int reg_1 = memory.get(blockName);reg_1++;
+                memory.replace(blockName,reg_1);
+                constVarTable.putArray(s,reg_1,dimension,dimensions);
+                if(constVarTable.isGlobal()){
+                    System.out.printf("@x%d = dso_local const [%d x i32]",reg_1,constVarTable.getVar(s).capacity);
+                    clearIntermediateVar();
+                    visit(ctx.constInitval());
+                    int j = 0;
+                    boolean first = true;
+                    System.out.print(" [");
+                    outputPosAndIndex(j, first, constVarTable);
+                    System.out.println("]");
+                    clearIntermediateVar();
+                }
+
+                return reg_1;
         }
-        return reg;
     }
+
+    private void outputPosAndIndex(int j, boolean first, VarTable constVarTable) {
+        for(int i = 0; i< constVarTable.currentVar.capacity; i++){
+            if(!first){
+                System.out.print(",");
+            }
+            if(first){
+                first = false;
+            }
+            if(j<index.size()&&i == index.get(j)){
+                System.out.print("i32 "+put.get(j));
+                j++;
+            }
+            else System.out.print("i32 0");
+        }
+    }
+//    constInitval: constExp #constInitval1
+//              |'{' ( constInitval ( ',' constInitval )* )? '}' #constInitval2;
 
     @Override
     public Integer visitConstInitval1(calcParser.ConstInitval1Context ctx) {
-        return visit(ctx.constExp());
-    }
+//        return visit(ctx.constExp());
+        if(varTable.isGlobal()){
+            if(depth!=0){//全局变量或常量
+                if(depth!=varTable.currentVar.dimension){
+                    System.out.println("visitConstInitval1");
+                    System.exit(-1);
+                }
+                index.add(pos);
+                put.add(visit(ctx.constExp()));
+            }
+            return visit(ctx.constExp());
+        }else{//局部常量
+            if(depth!=0){
+                int reg = memory.get(blockName);reg++;
+                memory.replace(blockName,reg);
 
-//    @Override
+                System.out.print("%x"+reg+" = "+"getelementptr ["+constVarTable.currentVar.capacity+" x i32], ["+constVarTable.currentVar.capacity+" x i32]* %x"+constVarTable.currentVar.reg);
+                System.out.println(", i32 0,i32 0");
+                int reg_2 = memory.get(blockName);reg_2++;
+                memory.replace(blockName,reg_2);
+                System.out.println("%x"+reg_2+" = getelementptr i32, i32* %x"+reg+",i32 "+pos);
+                System.out.println("store i32 "+visit(ctx.constExp())+",i32* %x"+reg_2);
+            }
+            return visit(ctx.constExp());
+        }
+    }
+    //    constInitval: constExp #constInitval1
+//              |'{' ( constInitval ( ',' constInitval )* )? '}' #constInitval2;
+    @Override
+    public Integer visitConstInitval2(calcParser.ConstInitval2Context ctx) {//全局的可能是变量和常量，局部的一定是常量。
+        if(varTable.isGlobal()){//非递归获取相应的pos和depth
+            setPosAndDepth(ctx, varTable);
+        }else{
+            setPosAndDepth(ctx, constVarTable);
+        }
+        return 0;
+    }
+    private void setPosAndDepth(calcParser.ConstInitval2Context ctx, VarTable varTable) {
+        depth++;
+        int oldpos = pos;
+        pos-=varTable.currentVar.bias[depth-1];
+        ctx.constInitval().forEach(constInitvalContext -> { pos+= varTable.currentVar.bias[depth-1];visit(constInitvalContext); });
+        pos = oldpos;
+        depth--;
+    }
+    //    @Override
 //    public Integer visitExp(calcParser.ExpContext ctx) {
 //        return visit(ctx.addExp());
 //    }

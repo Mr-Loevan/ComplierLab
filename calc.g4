@@ -15,6 +15,8 @@ decl:   constdecl #decl1
         |varDecl #decl2;
 constdecl: 'const' BType constDef ( ',' constDef )* ';';
 constDef:Ident ('['constExp']')* '=' constInitval;
+
+//constinitval
 constInitval: constExp #constInitval1
               |'{' ( constInitval ( ',' constInitval )* )? '}' #constInitval2;
 
