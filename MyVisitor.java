@@ -342,10 +342,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             Var curVar = varTable.getVar(s);
             if(varTable.isGlobal(s)&&varTable.getVar(s).capacity!=0){
                 //System.out.println("visitStmt1 is global");
-                System.out.printf("%%x%d = = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
+                System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
             }else if(varTable.getVar(s)!=null&&varTable.getVar(s).capacity!=0){
                 //System.out.println("visitStmt1 isnot global");
-                System.out.printf("%%x%d = = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
+                System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
             }else{
                 System.exit(-1);
                 System.out.println("visitStmt wrong vartable cannot find");
