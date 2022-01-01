@@ -196,7 +196,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.printf("%%x%d = icmp sge i32 %%x%d, %%x%d\n",reg_1,l,r);
                 break;
             default:
-                System.exit(-1);
+                System.exit(114);
         }
         int reg_2 = memory.get(blockName);
         reg_2++;
@@ -324,7 +324,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             valleft = false;
             if(varTable.get(s)==null)
             {
-                System.exit(-1);
+                System.exit(114);
                 System.out.println("visitStmt1");
             }
             int reg = varTable.get(s);
@@ -347,7 +347,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 //System.out.println("visitStmt1 isnot global");
                 System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
             }else{
-                System.exit(-1);
+                System.exit(114);
                 System.out.println("visitStmt wrong vartable cannot find");
             }
             int reg_1 = memory.get(blockName);reg_1++;
@@ -371,7 +371,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 
 //        if(varTable.get(s)==null)
 //        {
-//            System.exit(-1);
+//            System.exit(114);
 //            System.out.println("visitStmt1");
 //        }
 //        int reg = varTable.get(s);
@@ -398,7 +398,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             Var curVar = varTable.getVar(s);
             if(curVar.dimension!=ctx.exp().size()){
                 System.out.println("visit lval dimension wrong");
-                System.exit(-1);
+                System.exit(114);
             }
             switch (curVar.dimension){
                 case 0:
@@ -434,11 +434,11 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             Var curVar = constVarTable.getVar(s);
             if(valleft){
                 System.out.println("assignment to const");
-                System.exit(-1);
+                System.exit(114);
             }
             if(curVar.dimension!=ctx.exp().size()){
                 System.out.println("visit lval dimension wrong");
-                System.exit(-1);
+                System.exit(114);
             }
             switch (curVar.dimension){
                 case 0:
@@ -472,7 +472,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         }
         else{
             System.out.println("lval exit");
-            System.exit(-1);
+            System.exit(114);
         }
         return 0;
     }
@@ -490,7 +490,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 ////           System.out.printf("%%x%d = alloca i32\n",reg);
 ////       }else {
 ////           System.out.println("visitVarDef1");
-////           System.exit(-1);
+////           System.exit(114);
 ////       }
         int dimension = ctx.constExp().size();//0维数组就是普通变量
         switch (dimension){
@@ -505,13 +505,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            System.out.println(memory.get(blockName));
                 }else{
                     System.out.println("visitVarDef1");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitVarDef1");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -539,13 +539,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     System.out.printf("store i32 %%x%d, i32* %%x%d\n",val,reg);
                 }else {
                     System.out.println("visitVarDef2");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitvarDef2");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -598,13 +598,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            System.out.println(memory.get(blockName));
                 }else{
                     System.out.println("visitGvarDef1");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitGvarDef2");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -641,13 +641,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            System.out.println(memory.get(blockName));
                 }else{
                     System.out.println("visitGvarDef2");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitGvarDef2");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -728,7 +728,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            constVarTable.put(s,reg);
 //        }else{
 //            System.out.println("visitConstDef");
-//            System.exit(-1);
+//            System.exit(114);
 //        }
 //        return reg;
         int dimension = ctx.constExp().size();//0维数组就是普通变量
@@ -739,7 +739,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     constVarTable.put(s,reg);
                 }else{
                     System.out.println("visitConstDef");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 return reg;
 //            System.out.println("after global");
@@ -747,7 +747,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitConstDef");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -800,7 +800,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             if(depth!=0){//全局变量或常量
 //                if(depth!=varTable.currentVar.dimension){
 //                    System.out.println("visitConstInitval1");
-//                    System.exit(-1);
+//                    System.exit(114);
 //                }
                 index.add(pos);
                 put.add(ret);
@@ -868,7 +868,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             default:
                 System.out.println(c);
                 System.out.println("visitAddExp2");
-                System.exit(-1);
+                System.exit(114);
         }
         return time;
     }
@@ -900,7 +900,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             default:
                 System.out.println(c);
                 System.out.println("mule2");
-                System.exit(-1);
+                System.exit(114);
         }
         return time;
     }
@@ -931,7 +931,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 return new_reg;
             default:
                 System.out.println(op);
-                System.exit(-1);
+                System.exit(114);
         }
         return time;
     }
@@ -958,7 +958,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     });
                     System.out.printf("call void @putint(i32 %%x%d)\n", params.get(0));
                 }catch (Exception e){
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 break;
             case "getch":
@@ -974,7 +974,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     });
                     System.out.printf("call void @putch(i32 %%x%d)\n", params.get(0));
                 }catch (Exception e){
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 break;
         }
@@ -1036,7 +1036,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 else {
                     System.out.println("wrong here visitPrimaryExp3");
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 return reg;
             default:
@@ -1064,7 +1064,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     System.out.println("can not find var in primary exp 3 ");
                     System.out.println(s);
                     System.out.printf("%d------------------\n",reg);
-                    System.exit(-1);
+                    System.exit(114);
                 }
                 int reg_1,reg_2;
 
@@ -1130,7 +1130,7 @@ cPrimaryExp : '(' constExp ')' #cPrimaryExp1|
             return constVarTable.get(s);
         }else {
             System.out.println("visitCPrimaryExp3");
-            System.exit(-1);
+            System.exit(114);
         }
         return 0;
     }
@@ -1150,7 +1150,7 @@ cUnaryExp:cPrimaryExp #cUnaryExp1|
             case "-":
                 return -visit(ctx.cUnaryExp());
             default:
-                System.exit(-1);
+                System.exit(114);
         }
         return 0;
     }
@@ -1175,7 +1175,7 @@ cAddExp: cMulExp#cAddExp1|
                 return visit(ctx.cAddExp()) - visit(ctx.cMulExp());
             default:
                 System.out.println("visitCAddExp2");
-                System.exit(-1);
+                System.exit(114);
         }
         return 0;
     }
