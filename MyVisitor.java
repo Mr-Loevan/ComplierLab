@@ -314,7 +314,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitStmt1(calcParser.Stmt1Context ctx) {//只会给变量赋值
         String s = ctx.lVal().Ident().getText();
         valleft = true;
-        int oldL = lvalAdrr;
+        int oldL;
         int oldT = totallen;
         if(varTable.getVar(s)!=null) oldT = varTable.getVar(s).capacity;
         if(constVarTable.getVar(s)!=null) oldT = constVarTable.getVar(s).capacity;
@@ -335,6 +335,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.printf("store i32 %%x%d, i32* %%x%d\n",l,reg);
             }
             lvalAdrr = 0;
+            return 0;
         }else{
             valleft = false;
             int reg = memory.get(blockName);reg++;
@@ -357,6 +358,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            System.out.println("\nstmt1\n");
             System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg_1,oldL);//获取对应的偏移量
             System.out.printf("%%x%d = getelementptr i32, i32* %%x%d, i32 %%x%d\n",reg_2,reg,reg_1);
+            lvalAdrr=0;
             int l = visit(ctx.exp());
             System.out.printf("store i32 %%x%d, i32* %%x%d\n",l,reg_2);
             lvalAdrr=0;
@@ -1064,7 +1066,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     System.out.println("can not find var in primary exp 3 ");
                     System.out.println(s);
                     System.out.printf("%d------------------\n",reg);
-                    System.exit(lvalAdrr);
+                    System.exit(1);
                 }
                 int reg_1,reg_2;
 
