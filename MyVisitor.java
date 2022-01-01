@@ -1064,7 +1064,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     System.out.println("can not find var in primary exp 3 ");
                     System.out.println(s);
                     System.out.printf("%d------------------\n",reg);
-                    System.exit(1);
+                    System.exit(lvalAdrr);
                 }
                 int reg_1,reg_2;
 
