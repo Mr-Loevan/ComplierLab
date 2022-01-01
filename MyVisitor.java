@@ -398,13 +398,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         String s = ctx.Ident().getText();
         if(varTable.getVar(s)!=null){
             Var curVar = varTable.getVar(s);
-//            if(curVar.dimension!=ctx.exp().size()){
-////                System.out.println(curVar.capacity);
-////                System.out.println(curVar.dimension);
-////                System.out.println(ctx.exp().size());
-//                System.out.println("visit lval dimension wrong");
-//                System.exit(16);
-//            }
+            if(curVar.dimension!=ctx.exp().size()){
+                System.out.println(curVar.capacity);
+                System.out.println(curVar.dimension);
+                System.out.println(ctx.exp().size());
+                System.out.println("visit lval dimension wrong");
+                System.exit(16);
+            }
             return getInteger(ctx, curVar);
         }
         else if(constVarTable.getVar(s)!=null){
