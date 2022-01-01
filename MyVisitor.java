@@ -661,7 +661,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int j = 0;
                 boolean first = true;
                 System.out.print(" [");
-                outputPosAndIndex(j, first, varTable);
+                outputPosAndIndex(j, first, varTable.getVar(s).capacity);
                 System.out.println("]");
                 clearIntermediateVar();
                 // TODO: 2021/12/31 全局变量数组后面初始化输出一坨常量
@@ -763,7 +763,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     int j = 0;
                     boolean first = true;
                     System.out.print(" [");
-                    outputPosAndIndex(j, true, constVarTable);
+                    outputPosAndIndex(j, true, constVarTable.getVar(s).capacity);
                     System.out.println("]");
                     clearIntermediateVar();
                 }else{//局部常量数组
@@ -776,8 +776,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         }
     }
 
-    private void outputPosAndIndex(int j, boolean first, VarTable constVarTable) {
-        for(int i = 0; i< constVarTable.currentVar.capacity; i++){
+    private void outputPosAndIndex(int j, boolean first, int capacity) {
+        for(int i = 0; i< capacity; i++){
             if(!first){
                 System.out.print(",");
             }
@@ -800,10 +800,6 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int ret = visit(ctx.constExp());
         if(varTable.isGlobal()){
             if(depth!=0){//全局变量或常量
-//                if(depth!=varTable.currentVar.dimension){
-//                    System.out.println("visitConstInitval1");
-//                    System.exit(114);
-//                }
                 index.add(pos);
                 put.add(ret);
             }
