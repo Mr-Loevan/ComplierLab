@@ -340,10 +340,15 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             int reg = memory.get(blockName);reg++;
             memory.replace(blockName,reg);
             Var curVar = varTable.getVar(s);
-            if(varTable.isGlobal(s)){
+            if(varTable.isGlobal(s)&&varTable.getVar(s).capacity!=0){
+                //System.out.println("visitStmt1 is global");
                 System.out.printf("%%x%d = = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
-            }else{
+            }else if(varTable.getVar(s)!=null&&varTable.getVar(s).capacity!=0){
+                //System.out.println("visitStmt1 isnot global");
                 System.out.printf("%%x%d = = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
+            }else{
+                System.exit(-1);
+                System.out.println("visitStmt wrong vartable cannot find");
             }
             int reg_1 = memory.get(blockName);reg_1++;
             memory.replace(blockName,reg_1);
@@ -424,7 +429,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     lvalAdrr = reg_1;
                     return curVar.reg;
             }
-        }else if(constVarTable.getVar(s)!=null){
+        }
+        else if(constVarTable.getVar(s)!=null){
             Var curVar = constVarTable.getVar(s);
             if(valleft){
                 System.out.println("assignment to const");
@@ -463,7 +469,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     lvalAdrr = reg_1;
                     return curVar.reg;
             }
-        }else{
+        }
+        else{
             System.out.println("lval exit");
             System.exit(-1);
         }
@@ -1019,13 +1026,15 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     }else{
                         System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg,addr);
                     }
-                }else if(constVarTable.get(s)!=null){
+                }
+                else if(constVarTable.get(s)!=null){
                     reg = memory.get(blockName);
                     reg++;
                     memory.replace(blockName,reg);
                     int val = constVarTable.get(s);
                     System.out.printf("%%x%d = add i32 0, %d\n", reg,val);
-                }else {
+                }
+                else {
                     System.out.println("wrong here visitPrimaryExp3");
                     System.exit(-1);
                 }
@@ -1035,7 +1044,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 reg++;
                 memory.replace(blockName,reg);
                 Var curVar;
-                if(varTable.get(s)!=null){
+                if(varTable.get(s)!=null&&varTable.getVar(s).capacity!=0){
                     curVar = varTable.getVar(s);
                     if(varTable.isGlobal(s)){
                         System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
@@ -1043,7 +1052,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                         System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
                     }
 
-                }else if(constVarTable.get(s)!=null){
+                }else if(constVarTable.get(s)!=null&&constVarTable.getVar(s).capacity!=0){
                     curVar = constVarTable.getVar(s);
                     if(constVarTable.isGlobal(s)){
                         System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
