@@ -52,6 +52,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     ArrayList<Integer> index = new ArrayList<>();
     ArrayList<Integer> put = new ArrayList<>();
     Var currentVar;
+    Var constcurrentVar;
 //    Map<String, Integer> varTable = new HashMap<>();
 //    Map<String, Integer> constVarTable = new HashMap<>();
 
@@ -324,6 +325,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //        if(constVarTable.getVar(s)!=null) oldT = constVarTable.getVar(s).capacity;
         int lval = visit(ctx.lVal());
         oldL = lvalAdrr;
+        currentVar = varTable.currentVar;
         if(lvalAdrr == 0){//lval不是数组
             valleft = false;
             if(allVarTable.get(s)==null)
@@ -525,8 +527,9 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         switch (dimension) {
             case 0:
                 int val = visit(ctx.initVal());
-                int reg = memory.get(blockName);
+                int reg = 0;
                 if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
+                    reg = memory.get(blockName);
                     reg++;
                     memory.replace(blockName,reg);
                     varTable.put(s,reg);
@@ -547,6 +550,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
+                dimension = dimensions.size();
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
                 allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("%%x%d = alloca [%d x i32]\n",reg_1,varTable.getVar(s).capacity);
@@ -689,7 +693,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.println("%x" + reg_2 + " = getelementptr i32, i32* %x" + reg + ",i32 " + pos);
                 int ret = visit(ctx.exp());
                 System.out.printf("store i32 %%x%d,i32* %%x%d\n" ,ret,reg_2);
-                return ret;
+                return visit(ctx.exp());
         }
     }
 
@@ -754,7 +758,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
-                currentVar = constVarTable.putArray(s,reg_1,dimension,dimensions);
+                constcurrentVar = constVarTable.putArray(s,reg_1,dimension,dimensions);
                 allVarTable.putArray(s,reg_1,dimension,dimensions,true);
                 if(constVarTable.isGlobal()){//全局常量数组
                     System.out.printf("@x%d = dso_local constant [%d x i32]",reg_1,constVarTable.getVar(s).capacity);
@@ -797,7 +801,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitConstInitval1(calcParser.ConstInitval1Context ctx) {
 //        return visit(ctx.constExp());
-        int ret = visit(ctx.constExp());
+        //int ret = visit(ctx.constExp());
         if(varTable.isGlobal()){
             if(depth!=0){//全局变量或常量
 //                if(depth!=varTable.currentVar.dimension){
@@ -805,21 +809,21 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //                    System.exit(114);
 //                }
                 index.add(pos);
-                put.add(ret);
+                put.add(visit(ctx.constExp()));
             }
-            return ret;
+            return visit(ctx.constExp());
         }else{//局部常量
             if(depth!=0){
                 int reg = memory.get(blockName);reg++;
                 memory.replace(blockName,reg);
-                System.out.print("%x"+reg+" = "+"getelementptr ["+constVarTable.currentVar.capacity+" x i32], ["+constVarTable.currentVar.capacity+" x i32]* %x"+constVarTable.currentVar.reg);
+                System.out.print("%x"+reg+" = "+"getelementptr ["+constcurrentVar.capacity+" x i32], ["+constcurrentVar.capacity+" x i32]* %x"+constcurrentVar.reg);
                 System.out.println(", i32 0,i32 0");
                 int reg_2 = memory.get(blockName);reg_2++;
                 memory.replace(blockName,reg_2);
                 System.out.println("%x"+reg_2+" = getelementptr i32, i32* %x"+reg+",i32 "+pos);
-                System.out.println("store i32 "+ret+",i32* %x"+reg_2);
+                System.out.println("store i32 "+ctx.constExp()+",i32* %x"+reg_2);
             }
-            return ret;
+            return visit(ctx.constExp());
         }
     }
     //    constInitval: constExp #constInitval1
@@ -827,21 +831,22 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitConstInitval2(calcParser.ConstInitval2Context ctx) {//全局的可能是变量和常量，局部的一定是常量。
         if(varTable.isGlobal()){//非递归获取相应的pos和depth 在全局时要区别是变量还是常量才能到对应的表去找 
-            // TODO: 2022/1/1 干脆不到表去找了，直接存在这个类里面做局部变量
-            setPosAndDepth(ctx, varTable);
+            setposAndDepth(ctx, currentVar);
         }else{
-            setPosAndDepth(ctx, constVarTable);
+            setposAndDepth(ctx, constcurrentVar);
         }
         return 0;
     }
-    private void setPosAndDepth(calcParser.ConstInitval2Context ctx, VarTable varTable) {
+
+    private void setposAndDepth(calcParser.ConstInitval2Context ctx, Var constcurrentVar) {
         depth++;
         int oldpos = pos;
         pos-=currentVar.bias[depth-1];
-        ctx.constInitval().forEach(constInitvalContext -> { pos+= currentVar.bias[depth-1];visit(constInitvalContext); });
+        ctx.constInitval().forEach(constInitvalContext -> { pos+= constcurrentVar.bias[depth-1];visit(constInitvalContext); });
         pos = oldpos;
         depth--;
     }
+
     //    @Override
 //    public Integer visitExp(calcParser.ExpContext ctx) {
 //        return visit(ctx.addExp());
