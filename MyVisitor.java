@@ -518,7 +518,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
-                System.out.printf("%%x%d =  alloca i32 [%d x i32]\n",reg_1,varTable.getVar(s).capacity);
+                System.out.printf("%%x%d =  alloca [%d x i32]\n",reg_1,varTable.getVar(s).capacity);
                 return reg_1;
         }
     }
