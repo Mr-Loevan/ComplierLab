@@ -402,35 +402,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.println("visit lval dimension wrong");
                 System.exit(16);
             }
-            switch (curVar.dimension){
-                case 0:
-                    return curVar.reg;
-                default:
-                    int ptr = 0;
-                    int reg_1 = memory.get(blockName);
-                    reg_1++;
-                    memory.replace(blockName,reg_1);
-                    System.out.printf("%%x%d = alloca i32\nstore i32 0, i32* %%x%d\n",reg_1,reg_1);//初始化取出来的数组某元素
-                    for (calcParser.ExpContext expContext:ctx.exp()) {
-                        int ret = visit(expContext);
-                        int reg_2 = memory.get(blockName);
-                        reg_2++;
-                        memory.replace(blockName,reg_2);
-                        int reg_3 = memory.get(blockName);
-                        reg_3++;
-                        memory.replace(blockName,reg_3);
-                        int reg_4 = memory.get(blockName);
-                        reg_4++;
-                        memory.replace(blockName,reg_4);
-                        System.out.printf("%%x%d = mul i32 %%x%d, %d\n",reg_2,ret,curVar.bias[ptr]);
-                        ptr++;
-                        System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg_3,reg_1);
-                        System.out.printf("%%x%d = add i32 %%x%d, %%x%d\n",reg_4,reg_2,reg_3);
-                        System.out.printf("store i32 %%x%d, i32* %%x%d\n",reg_4,reg_1);
-                    }
-                    lvalAdrr = reg_1;
-                    return curVar.reg;
-            }
+            return getInteger(ctx, curVar);
         }
         else if(constVarTable.getVar(s)!=null){
             Var curVar = constVarTable.getVar(s);
@@ -442,41 +414,45 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.println("visit lval dimension wrong");
                 System.exit(14);
             }
-            switch (curVar.dimension){
-                case 0:
-                    return curVar.reg;
-                default:
-                    int ptr = 0;
-                    int reg_1 = memory.get(blockName);
-                    reg_1++;
-                    memory.replace(blockName,reg_1);
-                    System.out.printf("%%x%d = alloca i32\nstore i32 0, i32* %%x%d\n",reg_1,reg_1);//初始化取出来的数组某元素
-                    for (calcParser.ExpContext expContext:ctx.exp()) {
-                        int ret = visit(expContext);
-                        int reg_2 = memory.get(blockName);
-                        reg_2++;
-                        memory.replace(blockName,reg_2);
-                        int reg_3 = memory.get(blockName);
-                        reg_3++;
-                        memory.replace(blockName,reg_3);
-                        int reg_4 = memory.get(blockName);
-                        reg_4++;
-                        memory.replace(blockName,reg_4);
-                        System.out.printf("%%x%d = mul i32 %%x%d, %d\n",reg_2,ret,curVar.bias[ptr]);
-                        ptr++;
-                        System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg_3,reg_1);
-                        System.out.printf("%%x%d = add i32 %%x%d, %%x%d\n",reg_4,reg_2,reg_3);
-                        System.out.printf("store i32 %%x%d, i32* %%x%d\n",reg_4,reg_1);
-                    }
-                    lvalAdrr = reg_1;
-                    return curVar.reg;
-            }
+            return getInteger(ctx, curVar);
         }
         else{
             System.out.println("lval exit");
             System.exit(13);
         }
         return 0;
+    }
+
+    private Integer getInteger(calcParser.LValContext ctx, Var curVar) {
+        switch (curVar.dimension){
+            case 0:
+                return curVar.reg;
+            default:
+                int ptr = 0;
+                int reg_1 = memory.get(blockName);
+                reg_1++;
+                memory.replace(blockName,reg_1);
+                System.out.printf("%%x%d = alloca i32\nstore i32 0, i32* %%x%d\n",reg_1,reg_1);//初始化取出来的数组某元素
+                for (calcParser.ExpContext expContext:ctx.exp()) {
+                    int ret = visit(expContext);
+                    int reg_2 = memory.get(blockName);
+                    reg_2++;
+                    memory.replace(blockName,reg_2);
+                    int reg_3 = memory.get(blockName);
+                    reg_3++;
+                    memory.replace(blockName,reg_3);
+                    int reg_4 = memory.get(blockName);
+                    reg_4++;
+                    memory.replace(blockName,reg_4);
+                    System.out.printf("%%x%d = mul i32 %%x%d, %d\n",reg_2,ret,curVar.bias[ptr]);
+                    ptr++;
+                    System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg_3,reg_1);
+                    System.out.printf("%%x%d = add i32 %%x%d, %%x%d\n",reg_4,reg_2,reg_3);
+                    System.out.printf("store i32 %%x%d, i32* %%x%d\n",reg_4,reg_1);
+                }
+                lvalAdrr = reg_1;
+                return curVar.reg;
+        }
     }
 
     //    varDef:Ident ('['constExp']')* #varDef1|

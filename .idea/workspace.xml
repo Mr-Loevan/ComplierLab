@@ -64,6 +64,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="antlr-4.9.2-complete.jar" type="JarApplication" temporary="true">
       <option name="JAR_PATH" value="$PROJECT_DIR$/antlr-4.9.2-complete.jar" />
       <method v="2" />
@@ -97,7 +108,7 @@
       <workItem from="1640853897223" duration="14080000" />
       <workItem from="1640923424556" duration="42489000" />
       <workItem from="1641024652162" duration="26000" />
-      <workItem from="1641024715285" duration="8340000" />
+      <workItem from="1641024715285" duration="13306000" />
     </task>
     <servers />
   </component>

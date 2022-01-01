@@ -45,7 +45,7 @@ funcRParams: exp (',' exp)*;
 block:'{' blockItem* '}';
 blockItem:decl#blockItem1|
           stmt#blockItem2;
-stmt:   lVal'='exp';' #stmt1|
+stmt:   lVal'='exp';' #stmt1| //lval
         (exp)? ';'#stmt2|
         'if' '(' cond ')'stmt ( 'else' stmt )?#stmt3|
          block  #stmt4|
@@ -64,10 +64,10 @@ eqExp:relExp    #eqExp1
 relExp:addExp   #relExp1
         |relExp CmpOp addExp  #relExp2;
 
-lVal: Ident ('['exp']')*;
+lVal: Ident ('['exp']')*;//
 primaryExp: '('exp')'   #primaryExp1
         |number     #primaryExp2
-        |lVal       #primaryExp3;
+        |lVal       #primaryExp3; //
 unaryExp: primaryExp    #unaryExp1
         |UnaryOp unaryExp   #unaryExp2
         |Ident '('(funcRParams)?')' #unaryExp3;
