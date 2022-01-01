@@ -5,27 +5,6 @@ import java.util.Vector;
 public class VarTable {
     Stack<HashMap<String, Var>> varTables = new Stack<>();
     Var currentVar;
-    class Var{
-        int reg;
-        int dimension;
-        Vector<Integer> dimensions;
-        int capacity;
-        int [] bias;
-        public Var(int reg){
-            this.reg = reg;
-        }
-        public Var(int reg,int dimension,Vector<Integer> dimensions){
-            this.reg = reg;
-            this.dimension = dimension;
-            this.dimensions = dimensions;
-            this.capacity=1;
-            this.dimensions.forEach(item -> capacity*=item);
-            this.bias = new int[dimension];
-            bias[dimension-1]=1;
-            for (int i = dimension-2; i >= 0; i--)
-                bias[i] = bias[i+1]* dimensions.get(i + 1);
-        }
-    }
     public Integer get(String s){
         int len = varTables.size();
         for (int i = len-1; i >=0; i--) {
@@ -47,9 +26,10 @@ public class VarTable {
     public void put(String s,int val){
         varTables.peek().put(s,new Var(val));
     }
-    public void putArray(String s, int val, int dimension, Vector<Integer> dimensions){
+    public Var putArray(String s, int val, int dimension, Vector<Integer> dimensions){
         currentVar = new Var(val,dimension,dimensions);
         varTables.peek().put(s,currentVar);
+        return currentVar;
     }
     public void pushIn(){
         varTables.push(new HashMap<String, Var>());

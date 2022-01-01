@@ -50,6 +50,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     int pos;
     ArrayList<Integer> index = new ArrayList<>();
     ArrayList<Integer> put = new ArrayList<>();
+    Var currentVar;
 //    Map<String, Integer> varTable = new HashMap<>();
 //    Map<String, Integer> constVarTable = new HashMap<>();
 
@@ -395,7 +396,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
-                varTable.putArray(s,reg_1,dimension,dimensions);
+                currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
                 System.out.printf("@x%d = dso_local global [%d x i32] zeroinitializer\n",reg_1,varTable.getVar(s).capacity);
                 return reg_1;
         }
@@ -438,7 +439,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
-                varTable.putArray(s,reg_1,dimension,dimensions);
+                currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
                 System.out.printf("@x%d = dso_local global [%d x i32]",reg_1,varTable.getVar(s).capacity);
                 clearIntermediateVar();
                 visit(ctx.constInitval());
@@ -508,19 +509,23 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
-                constVarTable.putArray(s,reg_1,dimension,dimensions);
-                if(constVarTable.isGlobal()){
+                currentVar = constVarTable.putArray(s,reg_1,dimension,dimensions);
+                if(constVarTable.isGlobal()){//全局常量数组
                     System.out.printf("@x%d = dso_local const [%d x i32]",reg_1,constVarTable.getVar(s).capacity);
                     clearIntermediateVar();
                     visit(ctx.constInitval());
                     int j = 0;
                     boolean first = true;
                     System.out.print(" [");
-                    outputPosAndIndex(j, first, constVarTable);
+                    outputPosAndIndex(j, true, constVarTable);
                     System.out.println("]");
                     clearIntermediateVar();
+                }else{//局部常量数组
+                    System.out.printf("@x%d = alloca [%d x i32]",reg_1,constVarTable.getVar(s).capacity);
+                    clearIntermediateVar();
+                    visit(ctx.constInitval());
+                    clearIntermediateVar();
                 }
-
                 return reg_1;
         }
     }
@@ -548,10 +553,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //        return visit(ctx.constExp());
         if(varTable.isGlobal()){
             if(depth!=0){//全局变量或常量
-                if(depth!=varTable.currentVar.dimension){
-                    System.out.println("visitConstInitval1");
-                    System.exit(-1);
-                }
+//                if(depth!=varTable.currentVar.dimension){
+//                    System.out.println("visitConstInitval1");
+//                    System.exit(-1);
+//                }
                 index.add(pos);
                 put.add(visit(ctx.constExp()));
             }
@@ -575,7 +580,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //              |'{' ( constInitval ( ',' constInitval )* )? '}' #constInitval2;
     @Override
     public Integer visitConstInitval2(calcParser.ConstInitval2Context ctx) {//全局的可能是变量和常量，局部的一定是常量。
-        if(varTable.isGlobal()){//非递归获取相应的pos和depth
+        if(varTable.isGlobal()){//非递归获取相应的pos和depth 在全局时要区别是变量还是常量才能到对应的表去找 
+            // TODO: 2022/1/1 干脆不到表去找了，直接存在这个类里面做局部变量 
             setPosAndDepth(ctx, varTable);
         }else{
             setPosAndDepth(ctx, constVarTable);
@@ -585,8 +591,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     private void setPosAndDepth(calcParser.ConstInitval2Context ctx, VarTable varTable) {
         depth++;
         int oldpos = pos;
-        pos-=varTable.currentVar.bias[depth-1];
-        ctx.constInitval().forEach(constInitvalContext -> { pos+= varTable.currentVar.bias[depth-1];visit(constInitvalContext); });
+        pos-=currentVar.bias[depth-1];
+        ctx.constInitval().forEach(constInitvalContext -> { pos+= currentVar.bias[depth-1];visit(constInitvalContext); });
         pos = oldpos;
         depth--;
     }
