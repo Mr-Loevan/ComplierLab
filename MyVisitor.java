@@ -400,7 +400,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.println("visit lval dimension wrong");
                 System.exit(-1);
             }
-            switch (currentVar.dimension){
+            switch (curVar.dimension){
                 case 0:
                     return curVar.reg;
                 default:
@@ -440,7 +440,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.out.println("visit lval dimension wrong");
                 System.exit(-1);
             }
-            switch (currentVar.dimension){
+            switch (curVar.dimension){
                 case 0:
                     return curVar.reg;
                 default:
