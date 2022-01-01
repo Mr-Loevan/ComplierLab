@@ -6,6 +6,7 @@ public class Var{
     Vector<Integer> dimensions;
     int capacity;
     int [] bias;
+    boolean isConst;
     public Var(int reg){
         this.reg = reg;
     }

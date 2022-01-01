@@ -35,8 +35,19 @@ public class VarTable {
     public void put(String s,int val){
         varTables.peek().put(s,new Var(val));
     }
+    public void put(String s,int val,boolean isConst){
+        Var var = new Var(val);
+        var.isConst = isConst;
+        varTables.peek().put(s,var);
+    }
     public Var putArray(String s, int val, int dimension, Vector<Integer> dimensions){
         currentVar = new Var(val,dimension,dimensions);
+        varTables.peek().put(s,currentVar);
+        return currentVar;
+    }
+    public Var putArray(String s, int val, int dimension, Vector<Integer> dimensions,boolean isConst){
+        currentVar = new Var(val,dimension,dimensions);
+        currentVar.isConst = isConst;
         varTables.peek().put(s,currentVar);
         return currentVar;
     }

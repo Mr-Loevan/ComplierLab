@@ -42,6 +42,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     Map<String, Integer> memory = new HashMap<>();
     VarTable varTable = new VarTable();
     VarTable constVarTable = new VarTable();
+    VarTable allVarTable = new VarTable();
     Stack<Integer> backFillWhile = new Stack<>();
     Stack<Integer> backFillLoopout = new Stack<>();
     Integer curArrayDimension = 0;
@@ -58,6 +59,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public MyVisitor(){
         varTable.pushIn();//最低层存放全局变量
         constVarTable.pushIn();
+        allVarTable.pushIn();
         memory.put(blockName,0);
         //System.out.println("clear the block");
     }
@@ -79,10 +81,12 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override public Integer visitBlock(calcParser.BlockContext ctx){
         varTable.pushIn();
         constVarTable.pushIn();
+        allVarTable.pushIn();
         ctx.blockItem().forEach(blockItemContext -> {visit(blockItemContext);});
 //        System.out.println('}');
         varTable.popOut();
         constVarTable.popOut();
+        allVarTable.popOut();
         return 0;
     }
 //    cond:lOrExp;
@@ -315,14 +319,14 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         String s = ctx.lVal().Ident().getText();
         valleft = true;
         int oldL;
-        int oldT = totallen;
-        if(varTable.getVar(s)!=null) oldT = varTable.getVar(s).capacity;
-        if(constVarTable.getVar(s)!=null) oldT = constVarTable.getVar(s).capacity;
+//        int oldT = totallen;
+//        if(varTable.getVar(s)!=null) oldT = varTable.getVar(s).capacity;
+//        if(constVarTable.getVar(s)!=null) oldT = constVarTable.getVar(s).capacity;
         int lval = visit(ctx.lVal());
         oldL = lvalAdrr;
         if(lvalAdrr == 0){//lval不是数组
             valleft = false;
-            if(varTable.get(s)==null)
+            if(allVarTable.get(s)==null)
             {
                 System.exit(18);
                 System.out.println("visitStmt1");
@@ -396,7 +400,12 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitLVal(calcParser.LValContext ctx) {
         String s = ctx.Ident().getText();
-        if(varTable.getVar(s)!=null){
+        Var var = allVarTable.getVar(s);
+        if(allVarTable.getVar(s)==null){
+            System.out.println("no such a var in visitVal");
+            System.exit(115);
+        }
+        if(!var.isConst){
             Var curVar = varTable.getVar(s);
             if(curVar.dimension!=ctx.exp().size()){
                 System.out.println(curVar.capacity);
@@ -407,7 +416,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             }
             return getInteger(ctx, curVar);
         }
-        else if(constVarTable.getVar(s)!=null){
+        else if(var.isConst){
             Var curVar = constVarTable.getVar(s);
             if(valleft){
                 System.out.println("assignment to const");
@@ -481,6 +490,9 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     reg++;
                     memory.replace(blockName,reg);
                     varTable.put(s,reg);
+                    allVarTable.put(s,reg,false);
+
+
                     System.out.printf("%%x%d =  alloca i32 \n",reg);
 //            System.out.println("after global");
 //            System.out.println(memory.get(blockName));
@@ -499,6 +511,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
+                allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("%%x%d =  alloca [%d x i32]\n",reg_1,varTable.getVar(s).capacity);
                 return reg_1;
         }
@@ -517,6 +530,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     reg++;
                     memory.replace(blockName,reg);
                     varTable.put(s,reg);
+                    allVarTable.put(s,reg,false);
                     System.out.printf("%%x%d = alloca i32\n",reg);
                     System.out.printf("store i32 %%x%d, i32* %%x%d\n",val,reg);
                 }else {
@@ -534,6 +548,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
+                allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("%%x%d = alloca [%d x i32]\n",reg_1,varTable.getVar(s).capacity);
                 clearIntermediateVar();
                 visit(ctx.initVal());
@@ -575,6 +590,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     reg++;
                     memory.replace(blockName,reg);
                     varTable.put(s,reg);
+                    allVarTable.put(s,reg,false);
                     System.out.printf("@x%d = dso_local global i32 0\n",reg);
 //            System.out.println("after global");
 //            System.out.println(memory.get(blockName));
@@ -593,6 +609,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
+                allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("@x%d = dso_local global [%d x i32] zeroinitializer\n",reg_1,varTable.getVar(s).capacity);
                 return reg_1;
         }
@@ -617,6 +634,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     reg++;
                     memory.replace(blockName,reg);
                     varTable.put(s,reg);
+                    allVarTable.put(s,reg,false);
                     int val = visit(ctx.constInitval());
                     System.out.printf("@x%d = dso_local global i32 %d\n",reg,val);
 //            System.out.println("after global");
@@ -636,6 +654,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
+                allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("@x%d = dso_local global [%d x i32]",reg_1,varTable.getVar(s).capacity);
                 clearIntermediateVar();
                 visit(ctx.constInitval());
@@ -718,6 +737,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg = visit(ctx.constInitval());
                 if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
                     constVarTable.put(s,reg);
+                    allVarTable.put(s,reg,true);
                 }else{
                     System.out.println("visitConstDef");
                     System.exit(5);
@@ -735,6 +755,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 int reg_1 = memory.get(blockName);reg_1++;
                 memory.replace(blockName,reg_1);
                 currentVar = constVarTable.putArray(s,reg_1,dimension,dimensions);
+                allVarTable.putArray(s,reg_1,dimension,dimensions,true);
                 if(constVarTable.isGlobal()){//全局常量数组
                     System.out.printf("@x%d = dso_local constant [%d x i32]",reg_1,constVarTable.getVar(s).capacity);
                     clearIntermediateVar();
@@ -995,73 +1016,83 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //        memory.replace(blockName,reg);
         int reg=0;
         int ret = visit(ctx.lVal());
-        switch (lvalAdrr){
-            case 0:
-                if(varTable.get(s)!=null){
-                    int addr = varTable.get(s);
-                    reg = memory.get(blockName);
-                    reg++;
-                    memory.replace(blockName,reg);
-                    if(varTable.isGlobal(s)){
-                        System.out.printf("%%x%d = load i32, i32* @x%d\n",reg,addr);
-                    }else{
-                        System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg,addr);
-                    }
-                }
-                else if(constVarTable.get(s)!=null){
-                    reg = memory.get(blockName);
-                    reg++;
-                    memory.replace(blockName,reg);
-                    int val = constVarTable.get(s);
-                    System.out.printf("%%x%d = add i32 0, %d\n", reg,val);
-                }
-                else {
-                    System.out.println("wrong here visitPrimaryExp3");
-                    System.exit(2);
-                }
-                return reg;
-            default:
+        if (lvalAdrr == 0) {
+            if (allVarTable.getVar(s) == null) {
+                System.out.println("primaryexp3");
+                System.exit(116);
+            }
+            boolean isConst = allVarTable.getVar(s).isConst;
+            if (!isConst) {
+                int addr = varTable.get(s);
                 reg = memory.get(blockName);
                 reg++;
-                memory.replace(blockName,reg);
-                Var curVar;
-                if(varTable.get(s)!=null&&varTable.getVar(s).capacity!=0){
-                    curVar = varTable.getVar(s);
-                    if(varTable.isGlobal(s)){
-                        System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
-                    }else{
-                        System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
-                    }
-
-                }else if(constVarTable.get(s)!=null&&constVarTable.getVar(s).capacity!=0){
-                    curVar = constVarTable.getVar(s);
-                    if(constVarTable.isGlobal(s)){
-                        System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
-                    }else{
-                        System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
-                    }
-
-                }else{
-                    System.out.println("can not find var in primary exp 3 ");
-                    System.out.println(s);
-                    System.out.printf("%d------------------\n",reg);
-                    System.exit(1);
+                memory.replace(blockName, reg);
+                if (varTable.isGlobal(s)) {
+                    System.out.printf("%%x%d = load i32, i32* @x%d\n", reg, addr);
+                } else {
+                    System.out.printf("%%x%d = load i32, i32* %%x%d\n", reg, addr);
                 }
-                int reg_1,reg_2;
-
-                reg_2 = memory.get(blockName);reg_2++;memory.replace(blockName,reg_2);
-//                reg_3 = memory.get(blockName);reg_3++;memory.replace(blockName,reg_3);
-                System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg_2,lvalAdrr);//获取对应的偏移量
-                reg_1 = memory.get(blockName);reg_1++;memory.replace(blockName,reg_1);
-                System.out.printf("%%x%d = getelementptr i32, i32* %%x%d, i32 %%x%d\n",reg_1,reg,reg_2);
+            } else if (isConst) {
                 reg = memory.get(blockName);
                 reg++;
-                memory.replace(blockName,reg);
-                System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg,reg_1);
-                lvalAdrr = 0;
-                valleft=false;
-                return reg;
+                memory.replace(blockName, reg);
+                int val = constVarTable.get(s);
+                System.out.printf("%%x%d = add i32 0, %d\n", reg, val);
+            } else {
+                System.out.println("wrong here visitPrimaryExp3");
+                System.exit(2);
+            }
+            return reg;
         }
+        reg = memory.get(blockName);
+        reg++;
+        memory.replace(blockName, reg);
+        if (allVarTable.getVar(s) == null) {
+            System.out.println("primaryexp3");
+            System.exit(116);
+        }
+        boolean isConst1 = allVarTable.getVar(s).isConst;
+        Var curVar;
+        if (!isConst1) {
+            curVar = varTable.getVar(s);
+            if (varTable.isGlobal(s)) {
+                System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n", reg, curVar.capacity, curVar.capacity, curVar.reg);
+            } else {
+                System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n", reg, curVar.capacity, curVar.capacity, curVar.reg);
+            }
+
+        } else if (isConst1) {
+            curVar = constVarTable.getVar(s);
+            if (constVarTable.isGlobal(s)) {
+                System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* @x%d, i32 0, i32 0\n", reg, curVar.capacity, curVar.capacity, curVar.reg);
+            } else {
+                System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n", reg, curVar.capacity, curVar.capacity, curVar.reg);
+            }
+
+        } else {
+            System.out.println("can not find var in primary exp 3 ");
+            System.out.println(s);
+            System.out.printf("%d------------------\n", reg);
+            System.exit(1);
+        }
+        int reg_1, reg_2;
+
+        reg_2 = memory.get(blockName);
+        reg_2++;
+        memory.replace(blockName, reg_2);
+//                reg_3 = memory.get(blockName);reg_3++;memory.replace(blockName,reg_3);
+        System.out.printf("%%x%d = load i32, i32* %%x%d\n", reg_2, lvalAdrr);//获取对应的偏移量
+        reg_1 = memory.get(blockName);
+        reg_1++;
+        memory.replace(blockName, reg_1);
+        System.out.printf("%%x%d = getelementptr i32, i32* %%x%d, i32 %%x%d\n", reg_1, reg, reg_2);
+        reg = memory.get(blockName);
+        reg++;
+        memory.replace(blockName, reg);
+        System.out.printf("%%x%d = load i32, i32* %%x%d\n", reg, reg_1);
+        lvalAdrr = 0;
+        valleft = false;
+        return reg;
 
     }
 
