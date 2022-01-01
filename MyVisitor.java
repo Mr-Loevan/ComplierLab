@@ -324,7 +324,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             valleft = false;
             if(varTable.get(s)==null)
             {
-                System.exit(114);
+                System.exit(18);
                 System.out.println("visitStmt1");
             }
             int reg = varTable.get(s);
@@ -347,7 +347,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 //System.out.println("visitStmt1 isnot global");
                 System.out.printf("%%x%d = getelementptr [%d x i32], [%d x i32]* %%x%d, i32 0, i32 0\n",reg,curVar.capacity,curVar.capacity,curVar.reg);
             }else{
-                System.exit(114);
+                System.exit(17);
                 System.out.println("visitStmt wrong vartable cannot find");
             }
             int reg_1 = memory.get(blockName);reg_1++;
@@ -398,7 +398,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             Var curVar = varTable.getVar(s);
             if(curVar.dimension!=ctx.exp().size()){
                 System.out.println("visit lval dimension wrong");
-                System.exit(114);
+                System.exit(16);
             }
             switch (curVar.dimension){
                 case 0:
@@ -434,11 +434,11 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             Var curVar = constVarTable.getVar(s);
             if(valleft){
                 System.out.println("assignment to const");
-                System.exit(114);
+                System.exit(15);
             }
             if(curVar.dimension!=ctx.exp().size()){
                 System.out.println("visit lval dimension wrong");
-                System.exit(114);
+                System.exit(14);
             }
             switch (curVar.dimension){
                 case 0:
@@ -472,7 +472,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         }
         else{
             System.out.println("lval exit");
-            System.exit(114);
+            System.exit(13);
         }
         return 0;
     }
@@ -505,13 +505,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            System.out.println(memory.get(blockName));
                 }else{
                     System.out.println("visitVarDef1");
-                    System.exit(114);
+                    System.exit(12);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitVarDef1");
-                    System.exit(114);
+                    System.exit(11);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -522,7 +522,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 return reg_1;
         }
     }
-
+    //    varDef:Ident ('['constExp']')* #varDef1|
+//    Ident('['constExp']')* '='initVal #varDef2;
     @Override
     public Integer visitVarDef2(calcParser.VarDef2Context ctx) {
         String s = ctx.Ident().getText();
@@ -539,13 +540,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     System.out.printf("store i32 %%x%d, i32* %%x%d\n",val,reg);
                 }else {
                     System.out.println("visitVarDef2");
-                    System.exit(114);
+                    System.exit(10);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitvarDef2");
-                    System.exit(114);
+                    System.exit(9);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -598,13 +599,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            System.out.println(memory.get(blockName));
                 }else{
                     System.out.println("visitGvarDef1");
-                    System.exit(114);
+                    System.exit(8);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitGvarDef2");
-                    System.exit(114);
+                    System.exit(7);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -641,13 +642,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            System.out.println(memory.get(blockName));
                 }else{
                     System.out.println("visitGvarDef2");
-                    System.exit(114);
+                    System.exit(6);
                 }
                 return reg;
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitGvarDef2");
-                    System.exit(114);
+                    System.exit(5);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -728,7 +729,6 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //            constVarTable.put(s,reg);
 //        }else{
 //            System.out.println("visitConstDef");
-//            System.exit(114);
 //        }
 //        return reg;
         int dimension = ctx.constExp().size();//0维数组就是普通变量
@@ -739,7 +739,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     constVarTable.put(s,reg);
                 }else{
                     System.out.println("visitConstDef");
-                    System.exit(114);
+                    System.exit(5);
                 }
                 return reg;
 //            System.out.println("after global");
@@ -747,7 +747,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitConstDef");
-                    System.exit(114);
+                    System.exit(4);
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
@@ -1036,7 +1036,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 else {
                     System.out.println("wrong here visitPrimaryExp3");
-                    System.exit(114);
+                    System.exit(2);
                 }
                 return reg;
             default:
@@ -1064,7 +1064,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     System.out.println("can not find var in primary exp 3 ");
                     System.out.println(s);
                     System.out.printf("%d------------------\n",reg);
-                    System.exit(114);
+                    System.exit(1);
                 }
                 int reg_1,reg_2;
 
