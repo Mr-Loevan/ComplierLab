@@ -9,14 +9,16 @@ public class VarTable {
         int len = varTables.size();
         for (int i = len-1; i >=0; i--) {
             if(varTables.get(i).get(s)!=null){
-                return varTables.get(i).get(s).reg;
+                currentVar = varTables.get(i).get(s);
+                return currentVar.reg;
             }
         }
         return null;
     }
     public Integer getScope(String s){
         if(varTables.peek().get(s)!=null){
-            return varTables.peek().get(s).reg;
+            currentVar = varTables.peek().get(s);
+            return currentVar.reg;
         }else
             return null;
     }
@@ -24,7 +26,8 @@ public class VarTable {
         int len = varTables.size();
         for (int i = len-1; i >=0; i--) {
             if(varTables.get(i).get(s)!=null){
-                return varTables.get(i).get(s);
+                currentVar = varTables.get(i).get(s);
+                return currentVar;
             }
         }
         return null;
