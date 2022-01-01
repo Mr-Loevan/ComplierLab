@@ -21,7 +21,13 @@ public class VarTable {
             return null;
     }
     public Var getVar(String s){
-        return varTables.peek().get(s);
+        int len = varTables.size();
+        for (int i = len-1; i >=0; i--) {
+            if(varTables.get(i).get(s)!=null){
+                return varTables.get(i).get(s);
+            }
+        }
+        return null;
     }
     public void put(String s,int val){
         varTables.peek().put(s,new Var(val));
