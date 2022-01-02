@@ -1,6 +1,6 @@
-[jobs.lab7]
+[jobs.lab5]
 
-image = { source = "dockerfile", path = ".", tag = "jobs.lab7" }
+image = { source = "dockerfile", path = ".", tag = "jobs.lab5" }
 
 run = [
   "java -classpath .:../antlr-4.9.1-complete.jar Main < $input >$ir",
