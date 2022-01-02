@@ -16,6 +16,40 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompUnit(calcParser.CompUnitContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code gdecl1}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGdecl1(calcParser.Gdecl1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code gdecl2}
+	 * labeled alternative in {@link calcParser#gdecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGdecl2(calcParser.Gdecl2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#gvarDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGvarDecl(calcParser.GvarDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code gvarDef1}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGvarDef1(calcParser.GvarDef1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code gvarDef2}
+	 * labeled alternative in {@link calcParser#gvarDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGvarDef2(calcParser.GvarDef2Context ctx);
+	/**
 	 * Visit a parse tree produced by the {@code decl1}
 	 * labeled alternative in {@link calcParser#decl}.
 	 * @param ctx the parse tree
@@ -42,11 +76,88 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstDef(calcParser.ConstDefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link calcParser#constInitval}.
+	 * Visit a parse tree produced by the {@code constInitval1}
+	 * labeled alternative in {@link calcParser#constInitval}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConstInitval(calcParser.ConstInitvalContext ctx);
+	T visitConstInitval1(calcParser.ConstInitval1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code constInitval2}
+	 * labeled alternative in {@link calcParser#constInitval}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstInitval2(calcParser.ConstInitval2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link calcParser#constExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstExp(calcParser.ConstExpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cAddExp1}
+	 * labeled alternative in {@link calcParser#cAddExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCAddExp1(calcParser.CAddExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cAddExp2}
+	 * labeled alternative in {@link calcParser#cAddExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCAddExp2(calcParser.CAddExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cMulExp2}
+	 * labeled alternative in {@link calcParser#cMulExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCMulExp2(calcParser.CMulExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cMulExp1}
+	 * labeled alternative in {@link calcParser#cMulExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCMulExp1(calcParser.CMulExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cUnaryExp1}
+	 * labeled alternative in {@link calcParser#cUnaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCUnaryExp1(calcParser.CUnaryExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cUnaryExp2}
+	 * labeled alternative in {@link calcParser#cUnaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCUnaryExp2(calcParser.CUnaryExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cPrimaryExp1}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCPrimaryExp1(calcParser.CPrimaryExp1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cPrimaryExp2}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCPrimaryExp2(calcParser.CPrimaryExp2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cPrimaryExp3}
+	 * labeled alternative in {@link calcParser#cPrimaryExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCPrimaryExp3(calcParser.CPrimaryExp3Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#varDecl}.
 	 * @param ctx the parse tree
@@ -68,11 +179,19 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarDef2(calcParser.VarDef2Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link calcParser#initVal}.
+	 * Visit a parse tree produced by the {@code initVal1}
+	 * labeled alternative in {@link calcParser#initVal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInitVal(calcParser.InitValContext ctx);
+	T visitInitVal1(calcParser.InitVal1Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code initVal2}
+	 * labeled alternative in {@link calcParser#initVal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInitVal2(calcParser.InitVal2Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#funcDef}.
 	 * @param ctx the parse tree
@@ -140,6 +259,27 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStmt5(calcParser.Stmt5Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt6}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt6(calcParser.Stmt6Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt7}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt7(calcParser.Stmt7Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stmt8}
+	 * labeled alternative in {@link calcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmt8(calcParser.Stmt8Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#exp}.
 	 * @param ctx the parse tree
@@ -284,12 +424,6 @@ public interface calcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAddExp1(calcParser.AddExp1Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link calcParser#constExp}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConstExp(calcParser.ConstExpContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link calcParser#number}.
 	 * @param ctx the parse tree
