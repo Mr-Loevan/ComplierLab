@@ -56,6 +56,12 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
 //    Map<String, Integer> constVarTable = new HashMap<>();
 
 
+    public int getVregister(){
+        int reg = memory.get(blockName);
+        reg++;
+        memory.replace(blockName,reg);
+        return reg;
+    }
     public MyVisitor(){
         varTable.pushIn();//最低层存放全局变量
         constVarTable.pushIn();
@@ -107,9 +113,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitLOrExp2(calcParser.LOrExp2Context ctx) {
         int l = visit(ctx.lOrExp());
         int r = visit(ctx.lAndExp());
-        int reg = memory.get(blockName);
-        reg++;
-        memory.put(blockName,reg);//nt wrong
+        int reg = getVregister();
+        //nt wrong
         System.out.printf("%%x%d = or i1 %%x%d,%%x%d\n",reg,l,r);//要求左右均是i1
         return reg;
     }
@@ -118,9 +123,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitLAndExp1(calcParser.LAndExp1Context ctx) {
         int val = visit(ctx.eqExp());
-        int reg = memory.get(blockName);
-        reg++;
-        memory.put(blockName,reg);
+        int reg = getVregister();
+
         System.out.printf("%%x%d = icmp eq i32 1, %%x%d\n",reg,val);
         return reg;
     }
@@ -129,12 +133,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitLAndExp2(calcParser.LAndExp2Context ctx) {
         int l = visit(ctx.lAndExp());
         int r = visit(ctx.eqExp());
-        int reg = memory.get(blockName);
-        reg++;
-        memory.put(blockName,reg);
+        int reg = getVregister();
+
         System.out.printf("%%x%d = icmp eq i32 1, %%x%d\n",reg,r);
-        int new_reg = memory.get(blockName);new_reg++;
-        memory.put(blockName,new_reg);
+        int new_reg = getVregister();
         System.out.printf("%%x%d = and i1 %%x%d,%%x%d\n",new_reg,l,reg);
         return new_reg;
     }
@@ -152,12 +154,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int l = visit(ctx.eqExp());
         int r = visit(ctx.relExp());
         int reg1,reg2;
-        reg1 = memory.get(blockName);
-        reg1++;
-        memory.put(blockName,reg1);
-        reg2 = memory.get(blockName);
-        reg2++;
-        memory.put(blockName,reg2);
+        reg1 = getVregister();
+
+        reg2 = getVregister();
+
         switch (s){
             case "==":
                 System.out.printf("%%x%d = icmp eq i32 %%x%d, %%x%d\n",reg1,l,r);
@@ -182,9 +182,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitRelExp2(calcParser.RelExp2Context ctx) {
         int l = visit(ctx.relExp());
         int r = visit(ctx.addExp());
-        int reg_1 = memory.get(blockName);
-        reg_1++;
-        memory.put(blockName,reg_1);
+        int reg_1 = getVregister();
+
         String s = ctx.CmpOp().getText();
         switch (s){
             case "<":
@@ -202,9 +201,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             default:
                 System.exit(114);
         }
-        int reg_2 = memory.get(blockName);
-        reg_2++;
-        memory.put(blockName,reg_2);
+        int reg_2 = getVregister();
         System.out.printf("%%x%d = zext i1 %%x%d to i32\n",reg_2,reg_1);
         return reg_2;
     }
@@ -228,13 +225,12 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     //         'while' '(' cond ')' stmt #stmt5|
     @Override
     public Integer visitStmt5(calcParser.Stmt5Context ctx) {
-        int reg = memory.get(blockName);reg++;
-        memory.replace(blockName,reg);
+        int reg = getVregister();
         System.out.printf("br label %%x%d\n\n",reg);
         System.out.printf("x%d:\n",reg);
         int ret = visit(ctx.cond());
-        int loopin = memory.get(blockName);loopin++;memory.replace(blockName,loopin);
-        int loopout = memory.get(blockName);loopout++;memory.replace(blockName,loopout);
+        int loopin = getVregister();
+        int loopout = getVregister();
         backFillWhile.push(reg);
         //backFillLoopin.push(loopin);
         backFillLoopout.push(loopout);
@@ -273,12 +269,9 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         switch (seg){
             case 1:
                 int ret = visit(ctx.cond());
-                int reg_1 = memory.get(blockName);
-                reg_1++;
-                memory.put(blockName,reg_1);
-                int reg_2 = memory.get(blockName);
-                reg_2++;
-                memory.put(blockName,reg_2);
+                int reg_1 = getVregister();
+
+                int reg_2 = getVregister();
                 System.out.printf("br i1 %%x%d ,label %%x%d,label %%x%d\n\n",ret,reg_1,reg_2);
                 System.out.printf("x%d:\n",reg_1);
                 visit(ctx.stmt(0));
@@ -287,15 +280,12 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 break;
             case 2:
                 int case2_ret = visit(ctx.cond());
-                int case2_reg_1 = memory.get(blockName);
-                case2_reg_1++;
-                memory.put(blockName,case2_reg_1);
-                int case2_reg_2 = memory.get(blockName);
-                case2_reg_2++;
-                memory.put(blockName,case2_reg_2);
-                int case2_reg_3 = memory.get(blockName);
-                case2_reg_3++;
-                memory.put(blockName,case2_reg_3);
+                int case2_reg_1 = getVregister();
+
+                int case2_reg_2 = getVregister();
+
+                int case2_reg_3 = getVregister();
+
                 System.out.printf("br i1 %%x%d ,label %%x%d,label %%x%d\n\n",case2_ret,case2_reg_1,case2_reg_2);
                 System.out.printf("x%d:\n",case2_reg_1);
                 visit(ctx.stmt(0));
@@ -342,8 +332,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             return 0;
         }else{
             valleft = false;
-            int reg = memory.get(blockName);reg++;
-            memory.replace(blockName,reg);
+            int reg = getVregister();
             Var curVar = varTable.getVar(s);
             if(varTable.isGlobal(s)&&varTable.getVar(s).capacity!=0){
                 //System.out.println("visitStmt1 is global");
@@ -355,10 +344,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 System.exit(17);
                 System.out.println("visitStmt wrong vartable cannot find");
             }
-            int reg_1 = memory.get(blockName);reg_1++;
-            memory.replace(blockName,reg_1);
-            int reg_2 = memory.get(blockName);reg_2++;
-            memory.replace(blockName,reg_2);
+            int reg_1 = getVregister();
+            int reg_2 = getVregister();
 //            System.out.println("\nstmt1\n");
             System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg_1,oldL);//获取对应的偏移量
             System.out.printf("%%x%d = getelementptr i32, i32* %%x%d, i32 %%x%d\n",reg_2,reg,reg_1);
@@ -441,21 +428,16 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 return curVar.reg;
             default:
                 int ptr = 0;
-                int reg_1 = memory.get(blockName);
-                reg_1++;
-                memory.replace(blockName,reg_1);
+                int reg_1 = getVregister();
                 System.out.printf("%%x%d = alloca i32\nstore i32 0, i32* %%x%d\n",reg_1,reg_1);//初始化取出来的数组某元素
                 for (calcParser.ExpContext expContext:ctx.exp()) {
                     int ret = visit(expContext);
-                    int reg_2 = memory.get(blockName);
-                    reg_2++;
-                    memory.replace(blockName,reg_2);
-                    int reg_3 = memory.get(blockName);
-                    reg_3++;
-                    memory.replace(blockName,reg_3);
-                    int reg_4 = memory.get(blockName);
-                    reg_4++;
-                    memory.replace(blockName,reg_4);
+                    int reg_2 = getVregister();
+
+                    int reg_3 = getVregister();
+
+                    int reg_4 = getVregister();
+
                     System.out.printf("%%x%d = mul i32 %%x%d, %d\n",reg_2,ret,curVar.bias[ptr]);
                     ptr++;
                     System.out.printf("%%x%d = load i32, i32* %%x%d\n",reg_3,reg_1);
@@ -472,7 +454,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitVarDef1(calcParser.VarDef1Context ctx) {
        String s = ctx.Ident().getText();
-//       int reg = memory.get(blockName);
+//       int reg = getVregister();
 ////       if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){//在当前层符号表无
 ////           reg++;
 ////           memory.replace(blockName,reg);
@@ -485,17 +467,16 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int dimension = ctx.constExp().size();//0维数组就是普通变量
         switch (dimension){
             case 0:
-                int reg = memory.get(blockName);
+                int reg = getVregister();
                 if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
-                    reg++;
-                    memory.replace(blockName,reg);
+
                     varTable.put(s,reg);
                     allVarTable.put(s,reg,false);
 
 
                     System.out.printf("%%x%d =  alloca i32 \n",reg);
 //            System.out.println("after global");
-//            System.out.println(memory.get(blockName));
+//            System.out.println(getVregister());
                 }else{
                     System.out.println("visitVarDef1");
                     System.exit(12);
@@ -508,8 +489,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
-                int reg_1 = memory.get(blockName);reg_1++;
-                memory.replace(blockName,reg_1);
+                int reg_1 = getVregister();
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
                 allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("%%x%d =  alloca [%d x i32]\n",reg_1,varTable.getVar(s).capacity);
@@ -525,10 +505,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         switch (dimension) {
             case 0:
                 int val = visit(ctx.initVal());
-                int reg = memory.get(blockName);
+                int reg = getVregister();
                 if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
-                    reg++;
-                    memory.replace(blockName,reg);
                     varTable.put(s,reg);
                     allVarTable.put(s,reg,false);
                     System.out.printf("%%x%d = alloca i32\n",reg);
@@ -545,15 +523,13 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
-                int reg_1 = memory.get(blockName);reg_1++;
-                memory.replace(blockName,reg_1);
+                int reg_1 = getVregister();
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
                 allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("%%x%d = alloca [%d x i32]\n",reg_1,varTable.getVar(s).capacity);
                 clearIntermediateVar();
                 visit(ctx.initVal());
-                int reg_2 = memory.get(blockName);reg_2++;
-                memory.replace(blockName,reg_2);
+                int reg_2 = getVregister();
                 System.out.print("%x"+reg_2+" = "+"getelementptr ["+currentVar.capacity+" x i32], ["+currentVar.capacity+" x i32]* %x"+currentVar.reg);
                 System.out.println(", i32 0,i32 0");
                 int j = 0;
@@ -561,8 +537,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                     if(j<index.size()&&i == index.get(j)){
                         j++;
                     }else{
-                        int rep = memory.get(blockName) + 1;
-                        memory.replace(blockName,rep);
+                        int rep = getVregister();
                         System.out.println("%x"+rep+" = getelementptr i32,i32* %x"+reg_2+", i32 "+i);
                         System.out.println("store i32 0, i32* %x"+rep);
                     }
@@ -585,15 +560,14 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int dimension = ctx.constExp().size();//0维数组就是普通变量
         switch (dimension){
             case 0:
-                int reg = memory.get(blockName);
+                int reg = getVregister();
                 if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
-                    reg++;
-                    memory.replace(blockName,reg);
+
                     varTable.put(s,reg);
                     allVarTable.put(s,reg,false);
                     System.out.printf("@x%d = dso_local global i32 0\n",reg);
 //            System.out.println("after global");
-//            System.out.println(memory.get(blockName));
+//            System.out.println(getVregister());
                 }else{
                     System.out.println("visitGvarDef1");
                     System.exit(8);
@@ -606,8 +580,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
-                int reg_1 = memory.get(blockName);reg_1++;
-                memory.replace(blockName,reg_1);
+                int reg_1 = getVregister();
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
                 allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("@x%d = dso_local global [%d x i32] zeroinitializer\n",reg_1,varTable.getVar(s).capacity);
@@ -629,16 +602,15 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int dimension = ctx.constExp().size();
         switch (dimension) {
             case 0:
-                int reg = memory.get(blockName);
+                int reg = getVregister();
                 if(varTable.getScope(s)==null&&constVarTable.getScope(s)==null){
-                    reg++;
-                    memory.replace(blockName,reg);
+
                     varTable.put(s,reg);
                     allVarTable.put(s,reg,false);
                     int val = visit(ctx.constInitval());
                     System.out.printf("@x%d = dso_local global i32 %d\n",reg,val);
 //            System.out.println("after global");
-//            System.out.println(memory.get(blockName));
+//            System.out.println(getVregister());
                 }else{
                     System.out.println("visitGvarDef2");
                     System.exit(6);
@@ -651,8 +623,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
-                int reg_1 = memory.get(blockName);reg_1++;
-                memory.replace(blockName,reg_1);
+                int reg_1 = getVregister();
                 currentVar = varTable.putArray(s,reg_1,dimension,dimensions);
                 allVarTable.putArray(s,reg_1,dimension,dimensions,false);
                 System.out.printf("@x%d = dso_local global [%d x i32]",reg_1,varTable.getVar(s).capacity);
@@ -677,15 +648,11 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             case 0:
                 return visit(ctx.exp());
             default:
-                int reg = memory.get(blockName);
-                reg++;
-                memory.replace(blockName, reg);
+                int reg = getVregister();
                 index.add(pos);
                 System.out.print("%x" + reg + " = " + "getelementptr [" + currentVar.capacity + " x i32], [" + currentVar.capacity + " x i32]* %x" + currentVar.reg);
                 System.out.println(", i32 0,i32 0");
-                int reg_2 = memory.get(blockName);
-                reg_2++;
-                memory.replace(blockName, reg_2);
+                int reg_2 = getVregister();
                 System.out.println("%x" + reg_2 + " = getelementptr i32, i32* %x" + reg + ",i32 " + pos);
                 int ret = visit(ctx.exp());
                 System.out.printf("store i32 %%x%d,i32* %%x%d\n" ,ret,reg_2);
@@ -744,7 +711,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 return reg;
 //            System.out.println("after global");
-//            System.out.println(memory.get(blockName));
+//            System.out.println(getVregister());
             default:
                 if(varTable.getScope(s)!=null||constVarTable.getScope(s)!=null) {
                     System.out.println("visitConstDef");
@@ -752,8 +719,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 Vector<Integer> dimensions = new Vector<>();
                 ctx.constExp().forEach(constExpContext -> dimensions.add(visit(constExpContext)));
-                int reg_1 = memory.get(blockName);reg_1++;
-                memory.replace(blockName,reg_1);
+                int reg_1 = getVregister();
                 currentVar = constVarTable.putArray(s,reg_1,dimension,dimensions);
                 allVarTable.putArray(s,reg_1,dimension,dimensions,true);
                 if(constVarTable.isGlobal()){//全局常量数组
@@ -806,12 +772,10 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             return ret;
         }else{//局部常量
             if(depth!=0){
-                int reg = memory.get(blockName);reg++;
-                memory.replace(blockName,reg);
+                int reg = getVregister();
                 System.out.print("%x"+reg+" = "+"getelementptr ["+constVarTable.currentVar.capacity+" x i32], ["+constVarTable.currentVar.capacity+" x i32]* %x"+constVarTable.currentVar.reg);
                 System.out.println(", i32 0,i32 0");
-                int reg_2 = memory.get(blockName);reg_2++;
-                memory.replace(blockName,reg_2);
+                int reg_2 = getVregister();
                 System.out.println("%x"+reg_2+" = getelementptr i32, i32* %x"+reg+",i32 "+pos);
                 System.out.println("store i32 "+ret+",i32* %x"+reg_2);
             }
@@ -853,9 +817,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         String c = ctx.UnaryOp().getText();
         int l = visit(ctx.addExp());
         int r = visit(ctx.mulExp());
-        int time = memory.get(blockName);
-        time++;
-        memory.replace(blockName,time);
+        int time = getVregister();
+
         switch (c){
             case "+":
                 System.out.printf("%%x%d = add i32 %%x%d, %%x%d\n",time,l,r);
@@ -882,9 +845,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         String c = ctx.MulOp().getText();
         int l = visit(ctx.mulExp());
         int r = visit(ctx.unaryExp());
-        int time = memory.get(blockName);
-        time++;
-        memory.replace(blockName,time);
+        int time = getVregister();
         switch (c){
             case "*":
                 System.out.printf("%%x%d = mul i32 %%x%d, %%x%d\n",time,l,r);
@@ -910,9 +871,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     public Integer visitUnaryExp2(calcParser.UnaryExp2Context ctx) {
         int val = visit(ctx.unaryExp());
         String op = ctx.UnaryOp().getText();
-        int time = memory.get(blockName);
-        time++;
-        memory.replace(blockName,time);
+        int time = getVregister();
+
         switch (op){
             case "+":
                 System.out.printf("%%x%d = add i32 0, %%x%d\n",time,val);
@@ -922,9 +882,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 break;
             case "!":
                 System.out.printf("%%x%d = icmp eq i32 0, %%x%d\n",time,val);
-                int new_reg  = memory.get(blockName);
-                new_reg++;
-                memory.replace(blockName,new_reg);
+                int new_reg  = getVregister();
+
                 System.out.printf("%%x%d = zext i1 %%x%d to i32\n",new_reg,time);
                 return new_reg;
             default:
@@ -941,10 +900,9 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         int reg=0;
         switch (s){
             case "getint":
-                reg = memory.get(blockName);
-//                System.out.println(memory.get(blockName));
-                reg++;
-                memory.replace(blockName,reg);
+                reg = getVregister();
+//                System.out.println(getVregister());
+
 //                System.out.println("before call i32 getint");
 //                System.out.println(reg);
                 System.out.printf("%%x%d = call i32 @getint()\n",reg);
@@ -960,9 +918,8 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
                 }
                 break;
             case "getch":
-                reg = memory.get(blockName);
-                reg++;
-                memory.replace(blockName,reg);
+                reg = getVregister();
+
                 System.out.printf("%%x%d = call i32 @getch()\n",reg);
                 break;
             case "putch":
@@ -995,9 +952,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitPrimaryExp2(calcParser.PrimaryExp2Context ctx) {
         int val = visit(ctx.number());
-        int time = memory.get(blockName);
-        time++;
-        memory.replace(blockName,time);
+        int time = getVregister();
         System.out.printf("%%x%d = add i32 0, %d\n",time,val);
         return time;
     }
@@ -1007,7 +962,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
     @Override
     public Integer visitPrimaryExp3(calcParser.PrimaryExp3Context ctx) {
         String s = ctx.lVal().Ident().getText();
-//        int reg = memory.get(blockName);
+//        int reg = getVregister();
 //        reg++;
 //        memory.replace(blockName,reg);
         int reg=0;
@@ -1020,18 +975,15 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             boolean isConst = allVarTable.getVar(s).isConst;
             if (!isConst) {
                 int addr = varTable.get(s);
-                reg = memory.get(blockName);
-                reg++;
-                memory.replace(blockName, reg);
+                reg = getVregister();
+
                 if (varTable.isGlobal(s)) {
                     System.out.printf("%%x%d = load i32, i32* @x%d\n", reg, addr);
                 } else {
                     System.out.printf("%%x%d = load i32, i32* %%x%d\n", reg, addr);
                 }
             } else if (isConst) {
-                reg = memory.get(blockName);
-                reg++;
-                memory.replace(blockName, reg);
+                reg = getVregister();
                 int val = constVarTable.get(s);
                 System.out.printf("%%x%d = add i32 0, %d\n", reg, val);
             } else {
@@ -1040,9 +992,7 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
             }
             return reg;
         }
-        reg = memory.get(blockName);
-        reg++;
-        memory.replace(blockName, reg);
+        reg = getVregister();
         if (allVarTable.getVar(s) == null) {
             System.out.println("primaryexp3");
             System.exit(116);
@@ -1073,18 +1023,15 @@ public class MyVisitor extends calcBaseVisitor<Integer>{
         }
         int reg_1, reg_2;
 
-        reg_2 = memory.get(blockName);
-        reg_2++;
-        memory.replace(blockName, reg_2);
-//                reg_3 = memory.get(blockName);reg_3++;memory.replace(blockName,reg_3);
+        reg_2 = getVregister();
+
+//                reg_3 = getVregister();reg_3++;memory.replace(blockName,reg_3);
         System.out.printf("%%x%d = load i32, i32* %%x%d\n", reg_2, lvalAdrr);//获取对应的偏移量
-        reg_1 = memory.get(blockName);
-        reg_1++;
-        memory.replace(blockName, reg_1);
+        reg_1 = getVregister();
+
         System.out.printf("%%x%d = getelementptr i32, i32* %%x%d, i32 %%x%d\n", reg_1, reg, reg_2);
-        reg = memory.get(blockName);
-        reg++;
-        memory.replace(blockName, reg);
+        reg = getVregister();
+
         System.out.printf("%%x%d = load i32, i32* %%x%d\n", reg, reg_1);
         lvalAdrr = 0;
         valleft = false;
