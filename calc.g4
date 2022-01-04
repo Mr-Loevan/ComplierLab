@@ -101,8 +101,8 @@ Hexadecimal_digit:'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
                                         | 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 
 Nondigit:'_'|[a-z]|[A-Z];
-
+WS:(' '|'\t'|'\n'|'\r') -> skip;
 //FuncType:'int';
 LINE_COMMENT:'//' .*? '\r'? '\n' -> skip;
 COMMENT:'/*' .*? '*/' ->skip;
-WS:(' '|'\t'|'\n'|'\r') -> skip;
+

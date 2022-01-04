@@ -48,6 +48,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
@@ -63,6 +64,19 @@
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="ComplierLab" />
       <option name="PROGRAM_PARAMETERS" value="-tree" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -101,7 +115,7 @@
       <workItem from="1640923424556" duration="42489000" />
       <workItem from="1641024652162" duration="26000" />
       <workItem from="1641024715285" duration="14718000" />
-      <workItem from="1641294994921" duration="1251000" />
+      <workItem from="1641294994921" duration="3479000" />
     </task>
     <servers />
   </component>
